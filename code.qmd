@@ -1,0 +1,21 @@
+---
+title: "quarto"
+author: "Amandine & Joaquim"
+format: html
+editor: visual
+---
+
+[Link github repository](https://github.com/JoaquimBamba/project)
+
+```{r echo=FALSE,message=False, warning=FALSE}
+
+library(here)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+here::i_am("project.Rproj")
+```
+
+
+
