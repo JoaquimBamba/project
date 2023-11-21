@@ -32,4 +32,32 @@ urban_population <- vroom::vroom(here("data/Urban_population.csv"),delim=",",sho
 alternative_energy_consumption <- vroom::vroom(here("data/Alternative_nuclear_energy_consumption.csv"),delim=",",show_col_types = FALSE)
 fossil_energy_consumption <- vroom::vroom(here("data/Fossil_fuel_energy_consumption.csv"),delim=",",show_col_types = FALSE)
 ```
+# Links of the sources
 
+[CO2 emission](https://www.cia.gov/the-world-factbook/field/carbon-dioxide-emissions/country-comparison/)
+
+[Energy consumption](https://www.cia.gov/the-world-factbook/field/energy-consumption-per-capita/country-comparison/)
+
+[GDP growth](https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG)
+
+[GDP](https://data.worldbank.org/indicator/NY.GDP.MKTP.CD)
+
+[GDP composition by sector of origin](https://www.cia.gov/the-world-factbook/field/gdp-composition-by-sector-of-origin/country-comparison/)
+
+[Gross capital formation](https://data.worldbank.org/indicator/NE.GDI.TOTL.ZS?view=chart)
+
+[Population growth](https://data.worldbank.org/indicator/SP.POP.GROW?view=chart)
+
+[Urban population](https://data.worldbank.org/indicator/SP.URB.TOTL.IN.ZS?view=chart)
+
+[Alternative and nuclear energy consumption](https://data.worldbank.org/indicator/EG.USE.COMM.CL.ZS?view=chart)
+
+[Fossil fuel energy consumption](https://data.worldbank.org/indicator/EG.USE.COMM.FO.ZS?view=chart)
+
+Sources :
+
+- CIA.gov : The CIA's "World Factbook" is a comprehensive and publicly available online resource that provides information about countries around the world. Created and maintained by the United States Central Intelligence Agency (CIA), this publication offers a detailed overview of various aspects of nations, including their geography, population, government, economy, infrastructure, history, and much more. 
+The World Factbook is regularly updated to reflect demographic, political, economic, and other changes in countries worldwide. It's used by numerous individuals, including researchers, students, journalists, and professionals, as a reliable reference for obtaining accurate data about countries.
+
+- World Bank Open Data : The World Bank Open Data is an initiative by the World Bank Group that provides free and open access to a wide range of global development data. It offers a vast collection of data on various aspects of development across countries, including social, economic, financial, and environmental indicators. This data is made available to the public, researchers, policymakers, and developers to promote transparency, informed decision-making, and development efforts worldwide.
+The World Bank Open Data platform allows users to access, download, and visualize data in various formats, including charts, graphs, and maps. It serves as a valuable resource for researchers, policymakers, journalists, and anyone interested in understanding global development trends and making data-driven decisions to support development initiatives worldwide.
