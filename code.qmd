@@ -63,8 +63,149 @@ Sources :
 
 -   World Bank Open Data : The World Bank Open Data is an initiative by the World Bank Group that provides free and open access to a wide range of global development data. It offers a vast collection of data on various aspects of development across countries, including social, economic, financial, and environmental indicators. This data is made available to the public, researchers, policymakers, and developers to promote transparency, informed decision-making, and development efforts worldwide. The World Bank Open Data platform allows users to access, download, and visualize data in various formats, including charts, graphs, and maps. It serves as a valuable resource for researchers, policymakers, journalists, and anyone interested in understanding global development trends and making data-driven decisions to support development initiatives worldwide.
 
-## Creation of data files
+## Creation of the economic growth database
+
+### cleaning of gross_capital
+Gross capital formation (in percentage of GDP) consists of outlays on additions to the fixed assets of the economy plus net changes in the level of inventories.
+```{r}
+# We erase the necessary columns
+gross_capital <- gross_capital |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+
+# We change the name of the columns
+dput(names(gross_capital))
+names(gross_capital) <- c("Country.Name", "gross.capital.1960", "gross.capital.1961", "gross.capital.1962", "gross.capital.1963", "gross.capital.1964", "gross.capital.1965", "gross.capital.1966", 
+"gross.capital.1967", "gross.capital.1968", "gross.capital.1969", "gross.capital.1970", "gross.capital.1971", "gross.capital.1972", "gross.capital.1973", 
+"gross.capital.1974", "gross.capital.1975", "gross.capital.1976", "gross.capital.1977", "gross.capital.1978", "gross.capital.1979", "gross.capital.1980", 
+"gross.capital.1981", "gross.capital.1982", "gross.capital.1983", "gross.capital.1984", "gross.capital.1985", "gross.capital.1986", "gross.capital.1987", 
+"gross.capital.1988", "gross.capital.1989", "gross.capital.1990", "gross.capital.1991", "gross.capital.1992", "gross.capital.1993", "gross.capital.1994", 
+"gross.capital.1995", "gross.capital.1996", "gross.capital.1997", "gross.capital.1998", "gross.capital.1999", "gross.capital.2000", "gross.capital.2001", 
+"gross.capital.2002", "gross.capital.2003", "gross.capital.2004", "gross.capital.2005", "gross.capital.2006", "gross.capital.2007", "gross.capital.2008", 
+"gross.capital.2009", "gross.capital.2010", "gross.capital.2011", "gross.capital.2012", "gross.capital.2013", "gross.capital.2014", "gross.capital.2015", 
+"gross.capital.2016", "gross.capital.2017", "gross.capital.2018", "gross.capital.2019", "gross.capital.2020", "gross.capital.2021", "gross.capital.2022"
+)
+
+# We put NA instead of blanks
+gross_capital <- gross_capital %>% mutate_all(~na_if(., ""))
+
+# Then we re-iterate the process for each variable.
+```
+
+### cleaning of gdp_growth
+Annual percentage growth rate of GDP at market prices based on constant local currency. Aggregates are based on constant 2015 prices, expressed in U.S. dollars.
+
+```{r}
+gdp_growth <- gdp_growth |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+
+dput(names(gdp_growth))
+names(gdp_growth) <- c("Country.Name", "gdp.growth.1960", "gdp.growth.1961", "gdp.growth.1962", "gdp.growth.1963", "gdp.growth.1964", 
+"gdp.growth.1965", "gdp.growth.1966", "gdp.growth.1967", "gdp.growth.1968", "gdp.growth.1969", "gdp.growth.1970", "gdp.growth.1971", 
+"gdp.growth.1972", "gdp.growth.1973", "gdp.growth.1974", "gdp.growth.1975", "gdp.growth.1976", "gdp.growth.1977", "gdp.growth.1978", 
+"gdp.growth.1979", "gdp.growth.1980", "gdp.growth.1981", "gdp.growth.1982", "gdp.growth.1983", "gdp.growth.1984", "gdp.growth.1985", 
+"gdp.growth.1986", "gdp.growth.1987", "gdp.growth.1988", "gdp.growth.1989", "gdp.growth.1990", "gdp.growth.1991", "gdp.growth.1992", 
+"gdp.growth.1993", "gdp.growth.1994", "gdp.growth.1995", "gdp.growth.1996", "gdp.growth.1997", "gdp.growth.1998", "gdp.growth.1999", 
+"gdp.growth.2000", "gdp.growth.2001", "gdp.growth.2002", "gdp.growth.2003", "gdp.growth.2004", "gdp.growth.2005", "gdp.growth.2006", 
+"gdp.growth.2007", "gdp.growth.2008", "gdp.growth.2009", "gdp.growth.2010", "gdp.growth.2011", "gdp.growth.2012", "gdp.growth.2013", 
+"gdp.growth.2014", "gdp.growth.2015", "gdp.growth.2016", "gdp.growth.2017", "gdp.growth.2018", "gdp.growth.2019", "gdp.growth.2020", 
+"gdp.growth.2021", "gdp.growth.2022")
+
+gdp_growth[gdp_growth == ''] <- NA
+```
+### cleaning of gdp
+GDP at purchaser's prices (current US$) is the sum of gross value added by all resident producers in the economy plus any product taxes and minus any subsidies not included in the value of the products.
+```{r}
+gdp <- gdp |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+
+dput(names(gdp))
+names(gdp) <- c("Country.Name", "gdp.1960", "gdp.1961", "gdp.1962", "gdp.1963", "gdp.1964", 
+"gdp.1965", "gdp.1966", "gdp.1967", "gdp.1968", "gdp.1969", "gdp.1970", "gdp.1971", 
+"gdp.1972", "gdp.1973", "gdp.1974", "gdp..1975", "gdp.1976", "gdp.1977", "gdp.1978", 
+"gdp.1979", "gdp.1980", "gdp.1981", "gdp.1982", "gdp.1983", "gdp.1984", "gdp.1985", 
+"gdp.1986", "gdp.1987", "gdp.1988", "gdp.1989", "gdp.1990", "gdp.1991", "gdp.1992", 
+"gdp.1993", "gdp.1994", "gdp.1995", "gdp.1996", "gdp.1997", "gdp.1998", "gdp.1999", 
+"gdp.2000", "gdp.2001", "gdp.2002", "gdp.2003", "gdp.2004", "gdp.2005", "gdp.2006", 
+"gdp.2007", "gdp.2008", "gdp.2009", "gdp.2010", "gdp.2011", "gdp.2012", "gdp.2013", 
+"gdp.2014", "gdp.2015", "gdp.2016", "gdp.2017", "gdp.2018", "gdp.2019", "gdp.2020", 
+"gdp.2021", "gdp.2022")
+
+gdp <- gdp %>% mutate_all(~na_if(., ""))
+```
+
+
+### cleaning of gdp_by_sector
+The structure of value added is the percentage of GDP coming from Agriculture, Industry, Manufacturing and Services.
+```{r}
+gdp_by_sector <- gdp_by_sector |> select(-Gross.domestic.product, -X.1) |>
+  rename(gdp.agriculture.2010 = Agriculture,
+         gdp.agriculture.2020 = X.2,
+         gdp.industry.2010 = Industry,
+         gdp.industry.2020 = X.3,
+         gdp.manufacturing.2010 = Manufacturing,
+         gdp.manufacturing.2020 = X.4,
+         gdp.services.2010 = Services,
+         gdp.services.2020= X.5,
+         Country.Name = X)
+
+# on retire les lignes inutiles
+gdp_by_sector <- gdp_by_sector[-1,]
+gdp_by_sector <- gdp_by_sector[-1,]
+
+gdp_by_sector <- gdp_by_sector %>% mutate_all(~na_if(., ".."))
+```
+
+### cleaning of population_growth
+Annual population growth rate for year t is the exponential rate of growth of midyear population from year t-1 to t, expressed as a percentage .
+```{r}
+population_growth <- population_growth |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+
+dput((names(population_growth)))
+names(population_growth) <- c("Country.Name", "population.growth.1960", "population.growth.1961", "population.growth.1962", "population.growth.1963", "population.growth.1964", 
+"population.growth.1965", "population.growth.1966", "population.growth.1967", "population.growth.1968", "population.growth.1969", "population.growth.1970", "population.growth.1971", 
+"population.growth.1972", "population.growth.1973", "population.growth.1974", "population.growth.1975", "population.growth.1976", "population.growth.1977", "population.growth.1978", 
+"population.growth.1979", "population.growth.1980", "population.growth.1981", "population.growth.1982", "population.growth.1983", "population.growth.1984", "population.growth.1985", 
+"population.growth.1986", "population.growth.1987", "population.growth.1988", "population.growth.1989", "population.growth.1990", "population.growth.1991", "population.growth.1992", 
+"population.growth.1993", "population.growth.1994", "population.growth.1995", "population.growth.1996", "population.growth.1997", "population.growth.1998", "population.growth.1999", 
+"population.growth.2000", "population.growth.2001", "population.growth.2002", "population.growth.2003", "population.growth.2004", "population.growth.2005", "population.growth.2006", 
+"population.growth.2007", "population.growth.2008", "population.growth.2009", "population.growth.2010", "population.growth.2011", "population.growth.2012", "population.growth.2013", 
+"population.growth.2014", "population.growth.2015", "population.growth.2016", "population.growth.2017", "population.growth.2018", "population.growth.2019", "population.growth.2020", 
+"population.growth.2021", "population.growth.2022")
+
+population_growth[population_growth == ''] <- NA
+```
+### cleaning of urban_population
+Urban population (in percentage of the total population) refers to people living in urban areas as defined by national statistical offices.
+```{r}
+urban_population <- urban_population |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+
+dput((names(urban_population)))
+names(urban_population) <- c("Country.Name", "urban.population.1960", "urban.population.1961", "urban.population.1962", "urban.population.1963", "urban.population.1964", 
+"urban.population.1965", "urban.population.1966", "urban.population.1967", "urban.population.1968", "urban.population.1969", "urban.population.1970", "urban.population.1971", 
+"urban.population.1972", "urban.population.1973", "urban.population.1974", "urban.population.1975", "urban.population.1976", "urban.population.1977", "urban.population.1978", 
+"urban.population.1979", "urban.population.1980", "urban.population.1981", "urban.population.1982", "urban.population.1983", "urban.population.1984", "urban.population.1985", 
+"urban.population.1986", "urban.population.1987", "urban.population.1988", "urban.population.1989", "urban.population.1990", "urban.population.1991", "urban.population.1992", 
+"urban.population.1993", "urban.population.1994", "urban.population.1995", "urban.population.1996", "urban.population.1997", "urban.population.1998", "urban.population.1999", 
+"urban.population.2000", "urban.population.2001", "urban.population.2002", "urban.population.2003", "urban.population.2004", "urban.population.2005", "urban.population.2006", 
+"urban.population.2007", "urban.population.2008", "urban.population.2009", "urban.population.2010", "urban.population.2011", "urban.population.2012", "urban.population.2013", 
+"urban.population.2014", "urban.population.2015", "urban.population.2016", "urban.population.2017", "urban.population.2018", "urban.population.2019", "urban.population.2020", 
+"urban.population.2021", "urban.population.2022")
+
+urban_population <- urban_population %>% mutate_all(~na_if(., ""))
+```
+
+### data joining
+We need to create a data base with all the economic growth relative variables.
 
 ```{r}
 
+gdp_gdp_growth <- inner_join(gdp, gdp_growth, by=join_by(Country.Name))
+
+all_gdp <- inner_join(gdp_gdp_growth, gdp_by_sector, by=join_by(Country.Name))
+
+all_gdp_gross_capital <- inner_join(all_gdp, gross_capital, by=join_by(Country.Name))
+
+pop_growth_urban_pop <- inner_join(population_growth, urban_population, by=join_by(Country.Name))
+
+economic_growth <- inner_join(all_gdp_gross_capital, pop_growth_urban_pop, by=join_by(Country.Name))
 ```
+
+
+## Creation of the energy database
