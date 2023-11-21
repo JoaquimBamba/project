@@ -5,7 +5,7 @@ format: html
 editor: visual
 ---
 
-## Configuration
+# Configuration
 
 [Link github repository](https://github.com/JoaquimBamba/project)
 
@@ -15,24 +15,27 @@ library(here)
 library(ggplot2)
 library(tidyr)
 library(dplyr)
-
 here::i_am("project.Rproj")
 ```
 
 ## Data importation
+
 ```{r}
+#| eval: false
+#| echo: false
+gdp <- read.csv2(here("data/GDP.csv"))
+gdp_growth <- read.csv2(here("data/GDP_growth.csv"))
+gdp_by_sector <- read.csv2(here("data/Structure_of_value_added.csv"))
 co2 <- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
 energy_consumption <- vroom::vroom(here("data/Energy_consumption.csv"),show_col_types = FALSE)
-gdp_growth <- vroom::vroom(here("data/GDP_growth.csv"), delim=",",show_col_types = FALSE)
-gdp <- vroom::vroom(here("data/GDP.csv"),delim=",",show_col_types = FALSE)
-gdp_by_sector <- vroom::vroom(here("data/GDP_composition_by_sector_of_origin.csv"),show_col_types = FALSE)
-gross_capital <- vroom::vroom(here("data/Gross_capital_formation.csv"),delim=",",show_col_types = FALSE)
-population_growth <- vroom::vroom(here("data/POP_growth.csv"),delim=",",show_col_types = FALSE)
-urban_population <- vroom::vroom(here("data/Urban_population.csv"),delim=",",show_col_types = FALSE)
-alternative_energy_consumption <- vroom::vroom(here("data/Alternative_nuclear_energy_consumption.csv"),delim=",",show_col_types = FALSE)
-fossil_energy_consumption <- vroom::vroom(here("data/Fossil_fuel_energy_consumption.csv"),delim=",",show_col_types = FALSE)
+gross_capital <- read.csv2(here("data/Gross_capital_formation.csv"))
+population_growth <- read.csv2(here("data/POP_growth.csv"))
+urban_population <- read.csv2(here("data/Urban_population.csv"))
+alternative_energy_consumption <- read.csv2(here("data/Alternative_nuclear_energy_consumption.csv"))
+fossil_energy_consumption <- read.csv2(here("data/Fossil_fuel_energy_consumption.csv"))
 ```
-# Links of the sources
+
+## Links of the sources
 
 [CO2 emission](https://www.cia.gov/the-world-factbook/field/carbon-dioxide-emissions/country-comparison/)
 
@@ -42,7 +45,7 @@ fossil_energy_consumption <- vroom::vroom(here("data/Fossil_fuel_energy_consumpt
 
 [GDP](https://data.worldbank.org/indicator/NY.GDP.MKTP.CD)
 
-[GDP composition by sector of origin](https://www.cia.gov/the-world-factbook/field/gdp-composition-by-sector-of-origin/country-comparison/)
+[GDP composition by sector of origin](https://wdi.worldbank.org/table/4.2)
 
 [Gross capital formation](https://data.worldbank.org/indicator/NE.GDI.TOTL.ZS?view=chart)
 
@@ -56,8 +59,12 @@ fossil_energy_consumption <- vroom::vroom(here("data/Fossil_fuel_energy_consumpt
 
 Sources :
 
-- CIA.gov : The CIA's "World Factbook" is a comprehensive and publicly available online resource that provides information about countries around the world. Created and maintained by the United States Central Intelligence Agency (CIA), this publication offers a detailed overview of various aspects of nations, including their geography, population, government, economy, infrastructure, history, and much more. 
-The World Factbook is regularly updated to reflect demographic, political, economic, and other changes in countries worldwide. It's used by numerous individuals, including researchers, students, journalists, and professionals, as a reliable reference for obtaining accurate data about countries.
+-   CIA.gov : The CIA's "World Factbook" is a comprehensive and publicly available online resource that provides information about countries around the world. Created and maintained by the United States Central Intelligence Agency (CIA), this publication offers a detailed overview of various aspects of nations, including their geography, population, government, economy, infrastructure, history, and much more. The World Factbook is regularly updated to reflect demographic, political, economic, and other changes in countries worldwide. It's used by numerous individuals, including researchers, students, journalists, and professionals, as a reliable reference for obtaining accurate data about countries.
 
-- World Bank Open Data : The World Bank Open Data is an initiative by the World Bank Group that provides free and open access to a wide range of global development data. It offers a vast collection of data on various aspects of development across countries, including social, economic, financial, and environmental indicators. This data is made available to the public, researchers, policymakers, and developers to promote transparency, informed decision-making, and development efforts worldwide.
-The World Bank Open Data platform allows users to access, download, and visualize data in various formats, including charts, graphs, and maps. It serves as a valuable resource for researchers, policymakers, journalists, and anyone interested in understanding global development trends and making data-driven decisions to support development initiatives worldwide.
+-   World Bank Open Data : The World Bank Open Data is an initiative by the World Bank Group that provides free and open access to a wide range of global development data. It offers a vast collection of data on various aspects of development across countries, including social, economic, financial, and environmental indicators. This data is made available to the public, researchers, policymakers, and developers to promote transparency, informed decision-making, and development efforts worldwide. The World Bank Open Data platform allows users to access, download, and visualize data in various formats, including charts, graphs, and maps. It serves as a valuable resource for researchers, policymakers, journalists, and anyone interested in understanding global development trends and making data-driven decisions to support development initiatives worldwide.
+
+## Creation of data files
+
+```{r}
+
+```
