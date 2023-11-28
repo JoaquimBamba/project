@@ -5,37 +5,15 @@ format: html
 editor: visual
 ---
 
-# Configuration
+# Data management project : 
+
+This empirical approach examining Kuznets Environmental Curves delves into exploring the relationship between economic development and environmental degradation. 
+As theorized by the Kuznets Curve hypothesis whether economic growth initially exacerbates environmental damage but eventually leads to environmental improvement.
+We will confront this theory with empirical data.
+
+## Links and sources
 
 [Link github repository](https://github.com/JoaquimBamba/project)
-
-```{r echo=FALSE,message=False, warning=FALSE}
-
-library(here)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
-here::i_am("project.Rproj")
-```
-
-## Data importation
-
-```{r}
-#| eval: false
-#| echo: false
-gdp <- read.csv2(here("data/GDP.csv"))
-gdp_growth <- read.csv2(here("data/GDP_growth.csv"))
-gdp_by_sector <- read.csv2(here("data/Structure_of_value_added.csv"))
-co2 <- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
-energy_consumption <- vroom::vroom(here("data/Energy_consumption.csv"),show_col_types = FALSE)
-gross_capital <- read.csv2(here("data/Gross_capital_formation.csv"))
-population_growth <- read.csv2(here("data/POP_growth.csv"))
-urban_population <- read.csv2(here("data/Urban_population.csv"))
-alternative_energy_consumption <- read.csv2(here("data/Alternative_nuclear_energy_consumption.csv"))
-fossil_energy_consumption <- read.csv2(here("data/Fossil_fuel_energy_consumption.csv"))
-```
-
-## Links of the sources
 
 [CO2 emission](https://www.cia.gov/the-world-factbook/field/carbon-dioxide-emissions/country-comparison/)
 
@@ -53,9 +31,9 @@ fossil_energy_consumption <- read.csv2(here("data/Fossil_fuel_energy_consumption
 
 [Urban population](https://data.worldbank.org/indicator/SP.URB.TOTL.IN.ZS?view=chart)
 
-[Alternative and nuclear energy consumption](https://data.worldbank.org/indicator/EG.USE.COMM.CL.ZS?view=chart)
+[Industrial production growth](https://data.worldbank.org/indicator/SP.URB.TOTL.IN.ZS?view=chart)
 
-[Fossil fuel energy consumption](https://data.worldbank.org/indicator/EG.USE.COMM.FO.ZS?view=chart)
+[Renewable energy consumption](https://data.worldbank.org/indicator/EG.FEC.RNEW.ZS)
 
 Sources :
 
@@ -63,10 +41,56 @@ Sources :
 
 -   World Bank Open Data : The World Bank Open Data is an initiative by the World Bank Group that provides free and open access to a wide range of global development data. It offers a vast collection of data on various aspects of development across countries, including social, economic, financial, and environmental indicators. This data is made available to the public, researchers, policymakers, and developers to promote transparency, informed decision-making, and development efforts worldwide. The World Bank Open Data platform allows users to access, download, and visualize data in various formats, including charts, graphs, and maps. It serves as a valuable resource for researchers, policymakers, journalists, and anyone interested in understanding global development trends and making data-driven decisions to support development initiatives worldwide.
 
+
+## Data importation
+
+
+```{r echo=FALSE,message=False, warning=FALSE}
+
+library(here)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+here::i_am("project.Rproj")
+
+
+#| eval: false
+#| echo: false
+gdp <- read.csv2(here("data/GDP.csv"))
+gdp_growth <- read.csv2(here("data/GDP_growth.csv"))
+gdp_by_sector <- read.csv2(here("data/Structure_of_value_added.csv"))
+co2 <- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
+energy_consumption <- vroom::vroom(here("data/Energy_consumption.csv"),show_col_types = FALSE)
+gross_capital <- read.csv2(here("data/Gross_capital_formation.csv"))
+population_growth <- read.csv2(here("data/POP_growth.csv"))
+urban_population <- read.csv2(here("data/Urban_population.csv"))
+
+
+```
+
+
+
+
 ## Creation of the economic growth database
 
-### cleaning of gross_capital
-Gross capital formation (in percentage of GDP) consists of outlays on additions to the fixed assets of the economy plus net changes in the level of inventories.
+### Variables description
+
+Gross capital formation (in percentage of GDP)  : consists of outlays on additions to the fixed assets of the economy plus net changes in the level of inventories.
+
+Annual percentage growth rate of GDP : at market prices based on constant local currency. Aggregates are based on constant 2015 prices, expressed in U.S. dollars.
+
+GDP at purchaser's prices (current US$) : the sum of gross value added by all resident producers in the economy plus any product taxes and minus any subsidies not included in the value of the products.
+
+The structure of value added : the percentage of GDP coming from Agriculture, Industry, Manufacturing and Services.
+
+Annual population growth rate for year t : the exponential rate of growth of midyear population from year t-1 to t, expressed as a percentage .
+
+Urban population (in percentage of the total population)  : refers to people living in urban areas as defined by national statistical offices.
+
+### Cleaning the data sets
+
+#### cleaning of gross_capital
+
 ```{r}
 # We erase the necessary columns
 gross_capital <- gross_capital |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
@@ -90,8 +114,8 @@ gross_capital <- gross_capital %>% mutate_all(~na_if(., ""))
 # Then we re-iterate the process for each variable.
 ```
 
-### cleaning of gdp_growth
-Annual percentage growth rate of GDP at market prices based on constant local currency. Aggregates are based on constant 2015 prices, expressed in U.S. dollars.
+#### cleaning of gdp_growth
+
 
 ```{r}
 gdp_growth <- gdp_growth |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
@@ -110,8 +134,8 @@ names(gdp_growth) <- c("Country.Name", "gdp.growth.1960", "gdp.growth.1961", "gd
 
 gdp_growth[gdp_growth == ''] <- NA
 ```
-### cleaning of gdp
-GDP at purchaser's prices (current US$) is the sum of gross value added by all resident producers in the economy plus any product taxes and minus any subsidies not included in the value of the products.
+#### cleaning of gdp
+
 ```{r}
 gdp <- gdp |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
 
@@ -131,8 +155,8 @@ gdp <- gdp %>% mutate_all(~na_if(., ""))
 ```
 
 
-### cleaning of gdp_by_sector
-The structure of value added is the percentage of GDP coming from Agriculture, Industry, Manufacturing and Services.
+#### cleaning of gdp_by_sector
+
 ```{r}
 gdp_by_sector <- gdp_by_sector |> select(-Gross.domestic.product, -X.1) |>
   rename(gdp.agriculture.2010 = Agriculture,
@@ -152,8 +176,8 @@ gdp_by_sector <- gdp_by_sector[-1,]
 gdp_by_sector <- gdp_by_sector %>% mutate_all(~na_if(., ".."))
 ```
 
-### cleaning of population_growth
-Annual population growth rate for year t is the exponential rate of growth of midyear population from year t-1 to t, expressed as a percentage .
+#### cleaning of population_growth
+
 ```{r}
 population_growth <- population_growth |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
 
@@ -171,7 +195,7 @@ names(population_growth) <- c("Country.Name", "population.growth.1960", "populat
 
 population_growth[population_growth == ''] <- NA
 ```
-### cleaning of urban_population
+#### cleaning of urban_population
 Urban population (in percentage of the total population) refers to people living in urban areas as defined by national statistical offices.
 ```{r}
 urban_population <- urban_population |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
@@ -191,7 +215,7 @@ names(urban_population) <- c("Country.Name", "urban.population.1960", "urban.pop
 urban_population <- urban_population %>% mutate_all(~na_if(., ""))
 ```
 
-### data joining
+### Data joining
 We need to create a data base with all the economic growth relative variables.
 
 ```{r}
@@ -209,3 +233,78 @@ economic_growth <- inner_join(all_gdp_gross_capital, pop_growth_urban_pop, by=jo
 
 
 ## Creation of the energy database
+
+### Variables description 
+
+CO2 emissions : Carbon dioxide emissions from consumption of energy is the total amount of carbon dioxide, measured in metric tons, released by burning fossil fuels in the process of producing and consuming energy. This is usually the main variable used to measure how polluting a country is.
+
+Energy consumption per capita : measures the total amount of consumed energy divided by a country’s population, reported in Btu per person. Linking energy consumption per capita to pollution is vital as higher consumption often translates to increased emissions from energy sources like fossil fuels, contributing significantly to air and greenhouse gas pollution.
+
+Coal revenu : revenu from coal extraction and use as % of the GDP. Coal has a significant environmental impact as a high emitter of pollutants like sulfur dioxide and carbon dioxide when burned for energy. 
+
+industrial_production_growth :  annual percentage increase in industrial production (includes manufacturing, mining, and construction). The expansion of industrial activities often leads to increased emissions of pollutants, including greenhouse gases and particulate matter, directly impacting air, water, and soil quality. 
+
+Renewable energy consumption : Renewable energy consumption is the share of renewables energy in total final energy consumption. We expect this percentage to be higher in developped countries.
+
+### Cleaning the data sets
+
+```{r}
+co2 <- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
+
+energy_consumption <- vroom::vroom(here("data/Energy_consumption.csv"),show_col_types = FALSE)
+
+coal_revenu <- vroom::vroom(here("data/coal_revenu.csv"),show_col_types = FALSE)
+
+industrial_production_growth <- vroom::vroom(here("data/industrial_production_growth.csv"),show_col_types = FALSE)
+
+Renewable_energy_consumption<-vroom::vroom(here("data/Renewable_energy_consumption.csv"),show_col_types = FALSE)
+
+```
+
+```{r}
+
+#We keep only the relevant columns
+co2<- select(co2,value,name)
+
+energy_consumption<-select(energy_consumption,value, name)
+
+coal_revenu<-select(coal_revenu,value, name)
+
+industrial_production_growth<-select(industrial_production_growth,value, name)
+
+Renewable_energy_consumption <- select(Renewable_energy_consumption, `Country Name`, `Country Code`, `2019`)
+
+#We rename them
+colnames(co2) <- c("CO2 emissions 2019", "name")
+colnames(energy_consumption) <- c("Energy consumption 2019", "name")
+colnames(coal_revenu) <- c("coal_revenu 2019", "name")
+colnames(industrial_production_growth) <- c("industrial_production_growth 2019", "name")
+colnames(Renewable_energy_consumption) <- c("name", "country code","Renewable energy consumption 2019")
+
+```
+
+### Data joining
+
+```{r}
+# we merge the data sets by country name
+temp_merged <- merge(co2, energy_consumption, by = "name", all = FALSE)
+temp_merged <- merge(temp_merged, industrial_production_growth, by = "name", all = FALSE)
+temp_merged <- merge(temp_merged, coal_revenu, by = "name", all = FALSE)
+# we merge the temporary data set obtained with the last one with name again
+energy_dataset <- merge(temp_merged, Renewable_energy_consumption, by = "name", all = FALSE)
+
+```
+
+## Final Data set
+
+```{r}
+#We change the name of this column to be able to merge our 2 datasets
+colnames(economic_growth)[colnames(economic_growth) == "Country.Name"] <- "name"
+```
+
+
+```{r}
+# We merge them by country name
+dataset <- merge(energy_dataset, economic_growth, by = "name", all = FALSE)
+```
+
