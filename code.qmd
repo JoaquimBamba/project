@@ -2,6 +2,8 @@
 title: "quarto"
 author: "Amandine & Joaquim"
 format: html
+echo: false
+message: false
 editor: visual
 ---
 
@@ -166,15 +168,15 @@ urban_population <- urban_population %>% mutate_all(~na_if(., ""))
 ```
 
 ### Basic information on the data files
-#### GDP
-```{r}
-options(digits=3)
 
+#### GDP
+
+```{r}
 table_gdp <- GDP |>
   summarise(
             "Nb of rows" =nrow(GDP),
             "Nb of columns" = ncol(GDP),
-            "Mean" = mean(gdp, na.rm = TRUE),
+            "Mean" = mean(as.numeric(gdp), na.rm = TRUE),
             "Median" = median(gdp, na.rm = TRUE),
             "Min" = min(gdp, na.rm = TRUE),
             "Max" = max(gdp, na.rm = TRUE)
@@ -183,55 +185,80 @@ knitr::kable(table_gdp)
 ```
 
 #### gdp_growth
+
 ```{r}
 table_gdp_growth <- gdp_growth|>
   summarise(
             "Nb of rows"=nrow(gdp_growth),
             "Nb of columns"=ncol(gdp_growth),
-            "Mean" = mean(gdp.growth, na.rm = TRUE),
-            "Median" = median(gdp.growth, na.rm = TRUE),
+            "Mean" = mean(as.numeric(gdp.growth), na.rm = TRUE),
+            "Median" = median(as.numeric(gdp.growth), na.rm = TRUE),
             "Min" = min(gdp.growth, na.rm = TRUE),
             "Max" = max(gdp.growth, na.rm = TRUE)
             )
 knitr::kable(table_gdp_growth)
 ```
+
 #### gross_capital
+
 ```{r}
 table_gross_capital <- gross_capital|>
   summarise(
             "Nb of rows"=nrow(gross_capital),
             "Nb of columns"=ncol(gross_capital),
-            "Mean" = mean(gross.capital, na.rm = TRUE),
+            "Mean" = mean(as.numeric(gross.capital), na.rm = TRUE),
             "Median" = median(gross.capital, na.rm = TRUE),
             "Min" = min(gross.capital, na.rm = TRUE),
             "Max" = max(gross.capital, na.rm = TRUE)
             )
 knitr::kable(table_gross_capital)
 ```
+
 #### gdp_by_sector
+
 ```{r}
 table_gdp_by_sector <- gdp_by_sector |>
   summarise(
     "Nb of rows" = nrow(gdp_by_sector),
     "Nb of columns" = ncol(gdp_by_sector),
-    "Mean.services" = mean(gdp.services, na.rm = TRUE),
-    "Median.services" = median(gdp.services, na.rm = TRUE),
-    "Min.services" = min(gdp.services, na.rm = TRUE),
-    "Max.services" = max(gdp.services, na.rm = TRUE),
-    "Mean.manufacturing" = mean(gdp.manufacturing, na.rm = TRUE),
-    "Median.manufacturing" = median(gdp.manufacturing, na.rm = TRUE),
-    "Min.manufacturing" = min(gdp.manufacturing, na.rm = TRUE),
-    "Max.manufacturing" = max(gdp.manufacturing, na.rm = TRUE), "Mean.industry" = mean(gdp.industry, na.rm = TRUE),
-    "Median.industry" = median(gdp.industry, na.rm = TRUE),
-    "Min.industry" = min(gdp.industry, na.rm = TRUE),
-    "Max.industry" = max(gdp.industry, na.rm = TRUE), "Mean.agriculture" = mean(gdp.agriculture, na.rm = TRUE),
-    "Median.agriculture" = median(gdp.agriculture, na.rm = TRUE),
-    "Min.agriculture" = min(gdp.agriculture, na.rm = TRUE),
-    "Max.agriculture" = max(gdp.agriculture, na.rm = TRUE)
+    "Mean.services" = mean(as.numeric(gdp.services), na.rm = TRUE),
+    "Median.services" = median(as.numeric(gdp.services), na.rm = TRUE),
+    "Mean.manufacturing" = mean(as.numeric(gdp.manufacturing), na.rm = TRUE),
+    "Median.manufacturing" = median(as.numeric(gdp.manufacturing), na.rm = TRUE),
+    "Mean.industry" = mean(as.numeric(gdp.industry), na.rm = TRUE),
+    "Median.industry" = median(as.numeric(gdp.industry), na.rm = TRUE),
+    "Mean.agriculture" = mean(as.numeric(gdp.agriculture), na.rm = TRUE),
+    "Median.agriculture" = median(as.numeric(gdp.agriculture), na.rm = TRUE)
   )
 knitr::kable(table_gdp_by_sector)
 ```
 
+#### population_growth
+```{r}
+table_population_growth <- population_growth |>
+  summarise(
+    "Nb of rows" = nrow(population_growth),
+    "Nb of columns" = ncol(population_growth),
+    "Mean" = mean(as.numeric(population.growth), na.rm = TRUE),
+    "Median" = median(population.growth, na.rm = TRUE),
+    "Min" = min(population.growth, na.rm = TRUE),
+    "Max" = max(population.growth, na.rm = TRUE)
+  )
+knitr::kable(table_population_growth)
+```
+#### urban_population
+```{r}
+table_urban_population <- urban_population |>
+  summarise(
+    "Nb of rows" = nrow(urban_population),
+    "Nb of columns" = ncol(urban_population),
+    "Mean" = mean(as.numeric(urban.population), na.rm = TRUE),
+    "Median" = median(urban.population, na.rm = TRUE),
+    "Min" = min(urban.population, na.rm = TRUE),
+    "Max" = max(urban.population, na.rm = TRUE)
+  )
+knitr::kable(table_urban_population)
+```
 
 
 ### Data joining
@@ -288,6 +315,74 @@ colnames(industrial_production_growth) <- c("industrial.production.growth", "cou
 colnames(renewable_energy_consumption) <- c("country", "renewable.energy.consumption")
 ```
 
+### Basic information on the data files
+
+#### co2
+```{r}
+table_co2 <- co2 |>
+  summarise(
+    "Nb of rows" = nrow(co2),
+    "Nb of columns" = ncol(co2),
+    "Mean" = mean(co2.emissions, na.rm = TRUE),
+    "Median" = median(co2.emissions, na.rm = TRUE),
+    "Min" = min(co2.emissions, na.rm = TRUE),
+    "Max" = max(co2.emissions, na.rm = TRUE)
+  )
+knitr::kable(table_co2)
+```
+#### energy_consumption
+```{r}
+table_energy_consumption <- energy_consumption |>
+  summarise(
+    "Nb of rows" = nrow(energy_consumption),
+    "Nb of columns" = ncol(energy_consumption),
+    "Mean" = mean(energy.consumption, na.rm = TRUE),
+    "Median" = median(energy.consumption, na.rm = TRUE),
+    "Min" = min(energy.consumption, na.rm = TRUE),
+    "Max" = max(energy.consumption, na.rm = TRUE)
+  )
+knitr::kable(table_energy_consumption)
+```
+#### coal_revenu
+```{r}
+table_coal_revenu <- coal_revenu |>
+  summarise(
+    "Nb of rows" = nrow(coal_revenu),
+    "Nb of columns" = ncol(coal_revenu),
+    "Mean" = mean(coal.revenu, na.rm = TRUE),
+    "Median" = median(coal.revenu, na.rm = TRUE),
+    "Min" = min(coal.revenu, na.rm = TRUE),
+    "Max" = max(coal.revenu, na.rm = TRUE)
+  )
+knitr::kable(table_coal_revenu)
+```
+#### industrial_production_growth
+```{r}
+table_industrial_production_growth <- industrial_production_growth |>
+  summarise(
+    "Nb of rows" = nrow(industrial_production_growth),
+    "Nb of columns" = ncol(industrial_production_growth),
+    "Mean" = mean(industrial.production.growth, na.rm = TRUE),
+    "Median" = median(industrial.production.growth, na.rm = TRUE),
+    "Min" = min(industrial.production.growth, na.rm = TRUE),
+    "Max" = max(industrial.production.growth, na.rm = TRUE)
+  )
+knitr::kable(table_industrial_production_growth)
+```
+#### renewable_energy_consumption
+```{r}
+table_renewable_energy_consumption <- renewable_energy_consumption |>
+  summarise(
+    "Nb of rows" = nrow(renewable_energy_consumption),
+    "Nb of columns" = ncol(renewable_energy_consumption),
+    "Mean" = mean(renewable.energy.consumption, na.rm = TRUE),
+    "Median" = median(renewable.energy.consumption, na.rm = TRUE),
+    "Min" = min(renewable.energy.consumption, na.rm = TRUE),
+    "Max" = max(renewable.energy.consumption, na.rm = TRUE)
+  )
+knitr::kable(table_renewable_energy_consumption)
+```
+
 ### Data joining
 
 ```{r}
@@ -312,9 +407,10 @@ dataset <- inner_join(economic_growth_dataset, energy_dataset, by=join_by(countr
 
 The Environmental Kuznets Curve (EKC) suggests that environmental degradation initially worsens as a country begins industrialization and economic development. In the early stages of economic growth, the increased production and consumption often lead to higher pollution levels, resource depletion, and environmental damage. This phase is characterized by rising pollution levels, as industries prioritize economic growth over environmental concerns. However, according to the EKC hypothesis, as a country's income or level of development continues to increase, there reaches a turning point where environmental degradation begins to decrease.
 
-We will try to see if a contry CO2 emission are effectively explained by its economic and industrial developpment.
+We will try to see if a country CO2 emission are effectively explained by its economic and industrial development.
 
 ## Graphical representation of the main target variable
+
 We will make a graphical representation of our target variable : CO2 emissions.
 
 ```{r}
