@@ -234,6 +234,7 @@ knitr::kable(table_gdp_by_sector)
 ```
 
 #### population_growth
+
 ```{r}
 table_population_growth <- population_growth |>
   summarise(
@@ -246,7 +247,9 @@ table_population_growth <- population_growth |>
   )
 knitr::kable(table_population_growth)
 ```
+
 #### urban_population
+
 ```{r}
 table_urban_population <- urban_population |>
   summarise(
@@ -259,7 +262,6 @@ table_urban_population <- urban_population |>
   )
 knitr::kable(table_urban_population)
 ```
-
 
 ### Data joining
 
@@ -318,6 +320,7 @@ colnames(renewable_energy_consumption) <- c("country", "renewable.energy.consump
 ### Basic information on the data files
 
 #### co2
+
 ```{r}
 table_co2 <- co2 |>
   summarise(
@@ -330,7 +333,9 @@ table_co2 <- co2 |>
   )
 knitr::kable(table_co2)
 ```
+
 #### energy_consumption
+
 ```{r}
 table_energy_consumption <- energy_consumption |>
   summarise(
@@ -343,7 +348,9 @@ table_energy_consumption <- energy_consumption |>
   )
 knitr::kable(table_energy_consumption)
 ```
+
 #### coal_revenu
+
 ```{r}
 table_coal_revenu <- coal_revenu |>
   summarise(
@@ -356,7 +363,9 @@ table_coal_revenu <- coal_revenu |>
   )
 knitr::kable(table_coal_revenu)
 ```
+
 #### industrial_production_growth
+
 ```{r}
 table_industrial_production_growth <- industrial_production_growth |>
   summarise(
@@ -369,7 +378,9 @@ table_industrial_production_growth <- industrial_production_growth |>
   )
 knitr::kable(table_industrial_production_growth)
 ```
+
 #### renewable_energy_consumption
+
 ```{r}
 table_renewable_energy_consumption <- renewable_energy_consumption |>
   summarise(
