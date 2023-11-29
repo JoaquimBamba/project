@@ -13,6 +13,8 @@ Joaquim Bamba & Amandine Godefroy
 
 [Link github repository](https://github.com/JoaquimBamba/project)
 
+*Links to the sources :*
+
 [CO2 emission](https://www.cia.gov/the-world-factbook/field/carbon-dioxide-emissions/country-comparison/)
 
 [Energy consumption](https://www.cia.gov/the-world-factbook/field/energy-consumption-per-capita/country-comparison/)
@@ -33,35 +35,53 @@ Joaquim Bamba & Amandine Godefroy
 
 [Renewable energy consumption](https://data.worldbank.org/indicator/EG.FEC.RNEW.ZS)
 
-Sources :
+*Sources* *:*
 
--   CIA.gov : The CIA's "World Factbook" is a comprehensive and publicly available online resource that provides information about countries around the world. Created and maintained by the United States Central Intelligence Agency (CIA), this publication offers a detailed overview of various aspects of nations, including their geography, population, government, economy, infrastructure, history, and much more. The World Factbook is regularly updated to reflect demographic, political, economic, and other changes in countries worldwide. It's used by numerous individuals, including researchers, students, journalists, and professionals, as a reliable reference for obtaining accurate data about countries.
+-   **CIA.gov :** The CIA's "World Factbook" is a comprehensive and publicly available online resource that provides information about countries around the world. Created and maintained by the United States Central Intelligence Agency (CIA), this publication offers a detailed overview of various aspects of nations, including their geography, population, government, economy, infrastructure, history, and much more. The World Factbook is regularly updated to reflect demographic, political, economic, and other changes in countries worldwide. It's used by numerous individuals, including researchers, students, journalists, and professionals, as a reliable reference for obtaining accurate data about countries.
 
--   World Bank Open Data : The World Bank Open Data is an initiative by the World Bank Group that provides free and open access to a wide range of global development data. It offers a vast collection of data on various aspects of development across countries, including social, economic, financial, and environmental indicators. This data is made available to the public, researchers, policymakers, and developers to promote transparency, informed decision-making, and development efforts worldwide. The World Bank Open Data platform allows users to access, download, and visualize data in various formats, including charts, graphs, and maps. It serves as a valuable resource for researchers, policymakers, journalists, and anyone interested in understanding global development trends and making data-driven decisions to support development initiatives worldwide.
+-   **World Bank Open Data :** The World Bank Open Data is an initiative by the World Bank Group that provides free and open access to a wide range of global development data. It offers a vast collection of data on various aspects of development across countries, including social, economic, financial, and environmental indicators. This data is made available to the public, researchers, policymakers, and developers to promote transparency, informed decision-making, and development efforts worldwide. The World Bank Open Data platform allows users to access, download, and visualize data in various formats, including charts, graphs, and maps. It serves as a valuable resource for researchers, policymakers, journalists, and anyone interested in understanding global development trends and making data-driven decisions to support development initiatives worldwide.
 
 ## Data importation
 
-```{r echo=FALSE,message=False, warning=FALSE}
+```{r}
+#| eval: false
+#| echo: false
+#| warning: false
 
 library(here)
 library(ggplot2)
 library(tidyr)
 library(dplyr)
 here::i_am("project.Rproj")
+```
 
-
+```{r}
 #| eval: false
 #| echo: false
-gdp <- read.csv2(here("data/GDP.csv"))
+#| warning: false
+
+GDP <- read.csv2(here("data/GDP.csv"))
+
 gdp_growth <- read.csv2(here("data/GDP_growth.csv"))
+
 gdp_by_sector <- read.csv2(here("data/Structure_of_value_added.csv"))
+
 co2 <- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
+
 energy_consumption <- vroom::vroom(here("data/Energy_consumption.csv"),show_col_types = FALSE)
+
 gross_capital <- read.csv2(here("data/Gross_capital_formation.csv"))
+
 population_growth <- read.csv2(here("data/POP_growth.csv"))
+
 urban_population <- read.csv2(here("data/Urban_population.csv"))
+co2 <- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
 
+coal_revenu <- vroom::vroom(here("data/coal_revenu.csv"), show_col_types = FALSE)
 
+industrial_production_growth <- vroom::vroom(here("data/industrial_production_growth.csv"), show_col_types = FALSE)
+
+renewable_energy_consumption <- vroom::vroom(here("data/Renewable_energy_consumption.csv"), show_col_types = FALSE)
 ```
 
 ## Creation of the economic growth database
@@ -82,24 +102,13 @@ Urban population (in percentage of the total population) : refers to people livi
 
 ### Cleaning the data sets
 
+We will only keep the values for the year 2019 in our study when we have the choice of the year.
+
 #### cleaning of gross_capital
 
 ```{r}
-# We erase the necessary columns
-gross_capital <- gross_capital |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
-
-# We change the name of the columns
-dput(names(gross_capital))
-names(gross_capital) <- c("Country.Name", "gross.capital.1960", "gross.capital.1961", "gross.capital.1962", "gross.capital.1963", "gross.capital.1964", "gross.capital.1965", "gross.capital.1966", 
-"gross.capital.1967", "gross.capital.1968", "gross.capital.1969", "gross.capital.1970", "gross.capital.1971", "gross.capital.1972", "gross.capital.1973", 
-"gross.capital.1974", "gross.capital.1975", "gross.capital.1976", "gross.capital.1977", "gross.capital.1978", "gross.capital.1979", "gross.capital.1980", 
-"gross.capital.1981", "gross.capital.1982", "gross.capital.1983", "gross.capital.1984", "gross.capital.1985", "gross.capital.1986", "gross.capital.1987", 
-"gross.capital.1988", "gross.capital.1989", "gross.capital.1990", "gross.capital.1991", "gross.capital.1992", "gross.capital.1993", "gross.capital.1994", 
-"gross.capital.1995", "gross.capital.1996", "gross.capital.1997", "gross.capital.1998", "gross.capital.1999", "gross.capital.2000", "gross.capital.2001", 
-"gross.capital.2002", "gross.capital.2003", "gross.capital.2004", "gross.capital.2005", "gross.capital.2006", "gross.capital.2007", "gross.capital.2008", 
-"gross.capital.2009", "gross.capital.2010", "gross.capital.2011", "gross.capital.2012", "gross.capital.2013", "gross.capital.2014", "gross.capital.2015", 
-"gross.capital.2016", "gross.capital.2017", "gross.capital.2018", "gross.capital.2019", "gross.capital.2020", "gross.capital.2021", "gross.capital.2022"
-)
+# We keep only the necessary columns
+gross_capital <- gross_capital |> select(Country.Name, X2019) |> rename(country = Country.Name, gross.capital = X2019) 
 
 # We put NA instead of blanks
 gross_capital <- gross_capital %>% mutate_all(~na_if(., ""))
@@ -110,58 +119,30 @@ gross_capital <- gross_capital %>% mutate_all(~na_if(., ""))
 #### cleaning of gdp_growth
 
 ```{r}
-gdp_growth <- gdp_growth |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
-
-dput(names(gdp_growth))
-names(gdp_growth) <- c("Country.Name", "gdp.growth.1960", "gdp.growth.1961", "gdp.growth.1962", "gdp.growth.1963", "gdp.growth.1964", 
-"gdp.growth.1965", "gdp.growth.1966", "gdp.growth.1967", "gdp.growth.1968", "gdp.growth.1969", "gdp.growth.1970", "gdp.growth.1971", 
-"gdp.growth.1972", "gdp.growth.1973", "gdp.growth.1974", "gdp.growth.1975", "gdp.growth.1976", "gdp.growth.1977", "gdp.growth.1978", 
-"gdp.growth.1979", "gdp.growth.1980", "gdp.growth.1981", "gdp.growth.1982", "gdp.growth.1983", "gdp.growth.1984", "gdp.growth.1985", 
-"gdp.growth.1986", "gdp.growth.1987", "gdp.growth.1988", "gdp.growth.1989", "gdp.growth.1990", "gdp.growth.1991", "gdp.growth.1992", 
-"gdp.growth.1993", "gdp.growth.1994", "gdp.growth.1995", "gdp.growth.1996", "gdp.growth.1997", "gdp.growth.1998", "gdp.growth.1999", 
-"gdp.growth.2000", "gdp.growth.2001", "gdp.growth.2002", "gdp.growth.2003", "gdp.growth.2004", "gdp.growth.2005", "gdp.growth.2006", 
-"gdp.growth.2007", "gdp.growth.2008", "gdp.growth.2009", "gdp.growth.2010", "gdp.growth.2011", "gdp.growth.2012", "gdp.growth.2013", 
-"gdp.growth.2014", "gdp.growth.2015", "gdp.growth.2016", "gdp.growth.2017", "gdp.growth.2018", "gdp.growth.2019", "gdp.growth.2020", 
-"gdp.growth.2021", "gdp.growth.2022")
+gdp_growth <- gdp_growth |> select(Country.Name, X2019) |> rename(country = Country.Name, gdp.growth = X2019)
 
 gdp_growth[gdp_growth == ''] <- NA
 ```
 
-#### cleaning of gdp
+#### cleaning of GDP
 
 ```{r}
-gdp <- gdp |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+GDP <- GDP |>  select(Country.Name, X2019) |> rename(country = Country.Name, gdp = X2019)
 
-dput(names(gdp))
-names(gdp) <- c("Country.Name", "gdp.1960", "gdp.1961", "gdp.1962", "gdp.1963", "gdp.1964", 
-"gdp.1965", "gdp.1966", "gdp.1967", "gdp.1968", "gdp.1969", "gdp.1970", "gdp.1971", 
-"gdp.1972", "gdp.1973", "gdp.1974", "gdp..1975", "gdp.1976", "gdp.1977", "gdp.1978", 
-"gdp.1979", "gdp.1980", "gdp.1981", "gdp.1982", "gdp.1983", "gdp.1984", "gdp.1985", 
-"gdp.1986", "gdp.1987", "gdp.1988", "gdp.1989", "gdp.1990", "gdp.1991", "gdp.1992", 
-"gdp.1993", "gdp.1994", "gdp.1995", "gdp.1996", "gdp.1997", "gdp.1998", "gdp.1999", 
-"gdp.2000", "gdp.2001", "gdp.2002", "gdp.2003", "gdp.2004", "gdp.2005", "gdp.2006", 
-"gdp.2007", "gdp.2008", "gdp.2009", "gdp.2010", "gdp.2011", "gdp.2012", "gdp.2013", 
-"gdp.2014", "gdp.2015", "gdp.2016", "gdp.2017", "gdp.2018", "gdp.2019", "gdp.2020", 
-"gdp.2021", "gdp.2022")
-
-gdp <- gdp %>% mutate_all(~na_if(., ""))
+GDP <- GDP %>% mutate_all(~na_if(., ""))
 ```
 
 #### cleaning of gdp_by_sector
 
 ```{r}
-gdp_by_sector <- gdp_by_sector |> select(-Gross.domestic.product, -X.1) |>
-  rename(gdp.agriculture.2010 = Agriculture,
-         gdp.agriculture.2020 = X.2,
-         gdp.industry.2010 = Industry,
-         gdp.industry.2020 = X.3,
-         gdp.manufacturing.2010 = Manufacturing,
-         gdp.manufacturing.2020 = X.4,
-         gdp.services.2010 = Services,
-         gdp.services.2020= X.5,
-         Country.Name = X)
+gdp_by_sector <- gdp_by_sector |> select(X, X.5, X.4, X.3, X.2) |>
+  rename(gdp.agriculture = X.2,
+         gdp.industry = X.3,
+         gdp.manufacturing = X.4,
+         gdp.services = X.5,
+         country = X)
 
-# on retire les lignes inutiles
+# We suppress the unnecessary rows
 gdp_by_sector <- gdp_by_sector[-1,]
 gdp_by_sector <- gdp_by_sector[-1,]
 
@@ -171,60 +152,104 @@ gdp_by_sector <- gdp_by_sector %>% mutate_all(~na_if(., ".."))
 #### cleaning of population_growth
 
 ```{r}
-population_growth <- population_growth |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
-
-dput((names(population_growth)))
-names(population_growth) <- c("Country.Name", "population.growth.1960", "population.growth.1961", "population.growth.1962", "population.growth.1963", "population.growth.1964", 
-"population.growth.1965", "population.growth.1966", "population.growth.1967", "population.growth.1968", "population.growth.1969", "population.growth.1970", "population.growth.1971", 
-"population.growth.1972", "population.growth.1973", "population.growth.1974", "population.growth.1975", "population.growth.1976", "population.growth.1977", "population.growth.1978", 
-"population.growth.1979", "population.growth.1980", "population.growth.1981", "population.growth.1982", "population.growth.1983", "population.growth.1984", "population.growth.1985", 
-"population.growth.1986", "population.growth.1987", "population.growth.1988", "population.growth.1989", "population.growth.1990", "population.growth.1991", "population.growth.1992", 
-"population.growth.1993", "population.growth.1994", "population.growth.1995", "population.growth.1996", "population.growth.1997", "population.growth.1998", "population.growth.1999", 
-"population.growth.2000", "population.growth.2001", "population.growth.2002", "population.growth.2003", "population.growth.2004", "population.growth.2005", "population.growth.2006", 
-"population.growth.2007", "population.growth.2008", "population.growth.2009", "population.growth.2010", "population.growth.2011", "population.growth.2012", "population.growth.2013", 
-"population.growth.2014", "population.growth.2015", "population.growth.2016", "population.growth.2017", "population.growth.2018", "population.growth.2019", "population.growth.2020", 
-"population.growth.2021", "population.growth.2022")
+population_growth <- population_growth |>  select(Country.Name, X2019) |> rename(country = Country.Name, population.growth = X2019)
 
 population_growth[population_growth == ''] <- NA
 ```
 
 #### cleaning of urban_population
 
-Urban population (in percentage of the total population) refers to people living in urban areas as defined by national statistical offices.
-
 ```{r}
-urban_population <- urban_population |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
-
-dput((names(urban_population)))
-names(urban_population) <- c("Country.Name", "urban.population.1960", "urban.population.1961", "urban.population.1962", "urban.population.1963", "urban.population.1964", 
-"urban.population.1965", "urban.population.1966", "urban.population.1967", "urban.population.1968", "urban.population.1969", "urban.population.1970", "urban.population.1971", 
-"urban.population.1972", "urban.population.1973", "urban.population.1974", "urban.population.1975", "urban.population.1976", "urban.population.1977", "urban.population.1978", 
-"urban.population.1979", "urban.population.1980", "urban.population.1981", "urban.population.1982", "urban.population.1983", "urban.population.1984", "urban.population.1985", 
-"urban.population.1986", "urban.population.1987", "urban.population.1988", "urban.population.1989", "urban.population.1990", "urban.population.1991", "urban.population.1992", 
-"urban.population.1993", "urban.population.1994", "urban.population.1995", "urban.population.1996", "urban.population.1997", "urban.population.1998", "urban.population.1999", 
-"urban.population.2000", "urban.population.2001", "urban.population.2002", "urban.population.2003", "urban.population.2004", "urban.population.2005", "urban.population.2006", 
-"urban.population.2007", "urban.population.2008", "urban.population.2009", "urban.population.2010", "urban.population.2011", "urban.population.2012", "urban.population.2013", 
-"urban.population.2014", "urban.population.2015", "urban.population.2016", "urban.population.2017", "urban.population.2018", "urban.population.2019", "urban.population.2020", 
-"urban.population.2021", "urban.population.2022")
+urban_population <- urban_population |>  select(Country.Name, X2019) |> rename(country = Country.Name, urban.population = X2019)
 
 urban_population <- urban_population %>% mutate_all(~na_if(., ""))
 ```
+
+### Basic information on the data files
+#### GDP
+```{r}
+options(digits=3)
+
+table_gdp <- GDP |>
+  summarise(
+            "Nb of rows" =nrow(GDP),
+            "Nb of columns" = ncol(GDP),
+            "Mean" = mean(gdp, na.rm = TRUE),
+            "Median" = median(gdp, na.rm = TRUE),
+            "Min" = min(gdp, na.rm = TRUE),
+            "Max" = max(gdp, na.rm = TRUE)
+            )
+knitr::kable(table_gdp)
+```
+
+#### gdp_growth
+```{r}
+table_gdp_growth <- gdp_growth|>
+  summarise(
+            "Nb of rows"=nrow(gdp_growth),
+            "Nb of columns"=ncol(gdp_growth),
+            "Mean" = mean(gdp.growth, na.rm = TRUE),
+            "Median" = median(gdp.growth, na.rm = TRUE),
+            "Min" = min(gdp.growth, na.rm = TRUE),
+            "Max" = max(gdp.growth, na.rm = TRUE)
+            )
+knitr::kable(table_gdp_growth)
+```
+#### gross_capital
+```{r}
+table_gross_capital <- gross_capital|>
+  summarise(
+            "Nb of rows"=nrow(gross_capital),
+            "Nb of columns"=ncol(gross_capital),
+            "Mean" = mean(gross.capital, na.rm = TRUE),
+            "Median" = median(gross.capital, na.rm = TRUE),
+            "Min" = min(gross.capital, na.rm = TRUE),
+            "Max" = max(gross.capital, na.rm = TRUE)
+            )
+knitr::kable(table_gross_capital)
+```
+#### gdp_by_sector
+```{r}
+table_gdp_by_sector <- gdp_by_sector |>
+  summarise(
+    "Nb of rows" = nrow(gdp_by_sector),
+    "Nb of columns" = ncol(gdp_by_sector),
+    "Mean.services" = mean(gdp.services, na.rm = TRUE),
+    "Median.services" = median(gdp.services, na.rm = TRUE),
+    "Min.services" = min(gdp.services, na.rm = TRUE),
+    "Max.services" = max(gdp.services, na.rm = TRUE),
+    "Mean.manufacturing" = mean(gdp.manufacturing, na.rm = TRUE),
+    "Median.manufacturing" = median(gdp.manufacturing, na.rm = TRUE),
+    "Min.manufacturing" = min(gdp.manufacturing, na.rm = TRUE),
+    "Max.manufacturing" = max(gdp.manufacturing, na.rm = TRUE), "Mean.industry" = mean(gdp.industry, na.rm = TRUE),
+    "Median.industry" = median(gdp.industry, na.rm = TRUE),
+    "Min.industry" = min(gdp.industry, na.rm = TRUE),
+    "Max.industry" = max(gdp.industry, na.rm = TRUE), "Mean.agriculture" = mean(gdp.agriculture, na.rm = TRUE),
+    "Median.agriculture" = median(gdp.agriculture, na.rm = TRUE),
+    "Min.agriculture" = min(gdp.agriculture, na.rm = TRUE),
+    "Max.agriculture" = max(gdp.agriculture, na.rm = TRUE)
+  )
+knitr::kable(table_gdp_by_sector)
+```
+
+
 
 ### Data joining
 
 We need to create a data base with all the economic growth relative variables.
 
 ```{r}
+# In order to do so we join each of the data base two by two
+gdp_gdp_growth <- inner_join(gdp, gdp_growth, by=join_by(country))
 
-gdp_gdp_growth <- inner_join(gdp, gdp_growth, by=join_by(Country.Name))
+all_gdp <- inner_join(gdp_gdp_growth, gdp_by_sector, by=join_by(country))
 
-all_gdp <- inner_join(gdp_gdp_growth, gdp_by_sector, by=join_by(Country.Name))
+all_gdp_gross_capital <- inner_join(all_gdp, gross_capital, by=join_by(country))
 
-all_gdp_gross_capital <- inner_join(all_gdp, gross_capital, by=join_by(Country.Name))
+pop_growth_urban_pop <- inner_join(population_growth, urban_population, by=join_by(country))
 
-pop_growth_urban_pop <- inner_join(population_growth, urban_population, by=join_by(Country.Name))
-
-economic_growth <- inner_join(all_gdp_gross_capital, pop_growth_urban_pop, by=join_by(Country.Name))
+# Final economic growth data base
+economic_growth_dataset <- inner_join(all_gdp_gross_capital, pop_growth_urban_pop, by=join_by(country))
 ```
 
 ## Creation of the energy database
@@ -237,73 +262,61 @@ Energy consumption per capita : measures the total amount of consumed energy div
 
 Coal revenu : revenu from coal extraction and use as % of the GDP. Coal has a significant environmental impact as a high emitter of pollutants like sulfur dioxide and carbon dioxide when burned for energy.
 
-industrial_production_growth : annual percentage increase in industrial production (includes manufacturing, mining, and construction). The expansion of industrial activities often leads to increased emissions of pollutants, including greenhouse gases and particulate matter, directly impacting air, water, and soil quality.
+Industrial_production_growth : annual percentage increase in industrial production (includes manufacturing, mining, and construction). The expansion of industrial activities often leads to increased emissions of pollutants, including greenhouse gases and particulate matter, directly impacting air, water, and soil quality.
 
-Renewable energy consumption : Renewable energy consumption is the share of renewables energy in total final energy consumption. We expect this percentage to be higher in developped countries.
+Renewable energy consumption : Renewable energy consumption is the share of renewable energy in total final energy consumption. We expect this percentage to be higher in developed countries.
 
 ### Cleaning the data sets
 
 ```{r}
-co2 <- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
+# We keep only the relevant columns
+co2 <- select(co2, value, name)
 
-energy_consumption <- vroom::vroom(here("data/Energy_consumption.csv"),show_col_types = FALSE)
+energy_consumption <- select(energy_consumption, value, name)
 
-coal_revenu <- vroom::vroom(here("data/coal_revenu.csv"),show_col_types = FALSE)
+coal_revenu <- select(coal_revenu, value, name)
 
-industrial_production_growth <- vroom::vroom(here("data/industrial_production_growth.csv"),show_col_types = FALSE)
+industrial_production_growth <- select(industrial_production_growth, value, name)
 
-Renewable_energy_consumption<-vroom::vroom(here("data/Renewable_energy_consumption.csv"),show_col_types = FALSE)
+renewable_energy_consumption <- select(renewable_energy_consumption, `Country Name`, `2019`)
 
-```
-
-```{r}
-
-#We keep only the relevant columns
-co2<- select(co2,value,name)
-
-energy_consumption<-select(energy_consumption,value, name)
-
-coal_revenu<-select(coal_revenu,value, name)
-
-industrial_production_growth<-select(industrial_production_growth,value, name)
-
-Renewable_energy_consumption <- select(Renewable_energy_consumption, `Country Name`, `Country Code`, `2019`)
-
-#We rename them
-colnames(co2) <- c("CO2 emissions 2019", "name")
-colnames(energy_consumption) <- c("Energy consumption 2019", "name")
-colnames(coal_revenu) <- c("coal_revenu 2019", "name")
-colnames(industrial_production_growth) <- c("industrial_production_growth 2019", "name")
-colnames(Renewable_energy_consumption) <- c("name", "country code","Renewable energy consumption 2019")
-
-```
-
-```{r}
-summary(co2$`CO2 emissions 2019`)
+# We rename them
+colnames(co2) <- c("CO2.emissions", "country")
+colnames(energy_consumption) <- c("energy.consumption", "country")
+colnames(coal_revenu) <- c("coal.revenu", "country")
+colnames(industrial_production_growth) <- c("industrial.production.growth", "country")
+colnames(renewable_energy_consumption) <- c("country", "renewable.energy.consumption")
 ```
 
 ### Data joining
 
 ```{r}
 # we merge the data sets by country name
-temp_merged <- merge(co2, energy_consumption, by = "name", all = FALSE)
-temp_merged <- merge(temp_merged, industrial_production_growth, by = "name", all = FALSE)
-temp_merged <- merge(temp_merged, coal_revenu, by = "name", all = FALSE)
+temp_merged <- merge(co2, energy_consumption, by = "country", all = FALSE)
+temp_merged <- merge(temp_merged, industrial_production_growth, by = "country", all = FALSE)
+temp_merged <- merge(temp_merged, coal_revenu, by = "country", all = FALSE)
 # we merge the temporary data set obtained with the last one with name again
-energy_dataset <- merge(temp_merged, Renewable_energy_consumption, by = "name", all = FALSE)
+energy_dataset <- merge(temp_merged, renewable_energy_consumption, by = "country", all = FALSE)
 
 ```
 
 ## Final Data set
 
 ```{r}
-#We change the name of this column to be able to merge our 2 datasets
-colnames(economic_growth)[colnames(economic_growth) == "Country.Name"] <- "name"
+# We merge our economic growth dataset and our energy dataset 
+
+dataset <- inner_join(economic_growth_dataset, energy_dataset, by=join_by(country))
 ```
 
-```{r}
-library(ggplot2)
+## Research question
 
+The Environmental Kuznets Curve (EKC) suggests that environmental degradation initially worsens as a country begins industrialization and economic development. In the early stages of economic growth, the increased production and consumption often lead to higher pollution levels, resource depletion, and environmental damage. This phase is characterized by rising pollution levels, as industries prioritize economic growth over environmental concerns. However, according to the EKC hypothesis, as a country's income or level of development continues to increase, there reaches a turning point where environmental degradation begins to decrease.
+
+We will try to see if a contry CO2 emission are effectively explained by its economic and industrial developpment.
+
+## Graphical representation of the main targets variables
+
+```{r}
 # Identifier les trois pays avec les émissions de CO2 les plus élevées
 top_countries <- dataset[order(-dataset$`CO2 emissions 2019`), ][1:3, ]
 
@@ -317,11 +330,4 @@ ggplot(data = dataset, aes(x = name, y = `CO2 emissions 2019`)) +
 
 ```
 
-
 We can spot that CO2 emissions are very unequally distributed. China, India and the US are by far more polluting.
-
-## Research question
-
-The Environmental Kuznets Curve (EKC) suggests that environmental degradation initially worsens as a country begins industrialization and economic development. In the early stages of economic growth, the increased production and consumption often lead to higher pollution levels, resource depletion, and environmental damage. This phase is characterized by rising pollution levels, as industries prioritize economic growth over environmental concerns. However, according to the EKC hypothesis, as a country's income or level of development continues to increase, there reaches a turning point where environmental degradation begins to decrease.
-
-We will try to see if a contry CO2 emission are effectively explained by its economic and industrial developpment.
