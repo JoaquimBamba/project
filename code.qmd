@@ -17,7 +17,7 @@ Joaquim Bamba & Amandine Godefroy
 
 *Links to the sources :*
 
-[CO2 emission](https://www.cia.gov/the-world-factbook/field/carbon-dioxide-emissions/country-comparison/)
+[CO2 emission](https://data.jrc.ec.europa.eu/dataset/377801af-b094-4943-8fdc-f79a7c0c2d19#dataaccess)
 
 [Energy consumption](https://www.cia.gov/the-world-factbook/field/energy-consumption-per-capita/country-comparison/)
 
@@ -39,7 +39,9 @@ Joaquim Bamba & Amandine Godefroy
 
 *Sources* *:*
 
--   **CIA.gov :** The CIA's "World Factbook" is a comprehensive and publicly available online resource that provides information about countries around the world. Created and maintained by the United States Central Intelligence Agency (CIA), this publication offers a detailed overview of various aspects of nations, including their geography, population, government, economy, infrastructure, history, and much more. The World Factbook is regularly updated to reflect demographic, political, economic, and other changes in countries worldwide. It's used by numerous individuals, including researchers, students, journalists, and professionals, as a reliable reference for obtaining accurate data about countries.
+-   **European Commission, JRC Data Catalogue :** The main website of the European Comission's joint research center. The JRC provides independant and evidence-based science and knowledge supporting the EU policies.
+
+-   **gov :** The CIA's "World Factbook" is a comprehensive and publicly available online resource that provides information about countries around the world. Created and maintained by the United States Central Intelligence Agency (CIA), this publication offers a detailed overview of various aspects of nations, including their geography, population, government, economy, infrastructure, history, and much more. The World Factbook is regularly updated to reflect demographic, political, economic, and other changes in countries worldwide. It's used by numerous individuals, including researchers, students, journalists, and professionals, as a reliable reference for obtaining accurate data about countries.
 
 -   **World Bank Open Data :** The World Bank Open Data is an initiative by the World Bank Group that provides free and open access to a wide range of global development data. It offers a vast collection of data on various aspects of development across countries, including social, economic, financial, and environmental indicators. This data is made available to the public, researchers, policymakers, and developers to promote transparency, informed decision-making, and development efforts worldwide. The World Bank Open Data platform allows users to access, download, and visualize data in various formats, including charts, graphs, and maps. It serves as a valuable resource for researchers, policymakers, journalists, and anyone interested in understanding global development trends and making data-driven decisions to support development initiatives worldwide.
 
@@ -48,6 +50,7 @@ Joaquim Bamba & Amandine Godefroy
 ```{r}
 #| echo: false
 #| warning: false
+#| message: false
 
 library(here)
 library(ggplot2)
@@ -67,8 +70,6 @@ gdp_growth <- read.csv2(here("data/GDP_growth.csv"))
 
 gdp_by_sector <- read.csv2(here("data/Structure_of_value_added.csv"))
 
-co2 <- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
-
 energy_consumption <- vroom::vroom(here("data/Energy_consumption.csv"),show_col_types = FALSE)
 
 gross_capital <- read.csv2(here("data/Gross_capital_formation.csv"))
@@ -76,9 +77,18 @@ gross_capital <- read.csv2(here("data/Gross_capital_formation.csv"))
 population_growth <- read.csv2(here("data/POP_growth.csv"))
 
 urban_population <- read.csv2(here("data/Urban_population.csv"))
-co2 <- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
 
-coal_revenu <- vroom::vroom(here("data/coal_revenu.csv"), show_col_types = FALSE)
+co2<- vroom::vroom(here("data/CO2.csv"), show_col_types = FALSE)
+
+fossil_CO2_by_sector_and_country <- vroom::vroom(here("data/CO2/fossil_CO2_by_sector_and_country.csv"),delim = ";", show_col_types = FALSE)
+
+fossil_CO2_per_GDP_by_country <- vroom::vroom(here("data/CO2/fossil_CO2_per_GDP_by_country.csv"), delim = ";",show_col_types = FALSE)
+
+C02_macro_regions <- vroom::vroom(here("data/CO2/LULUCF by macro regions.csv"),delim = ";", show_col_types = FALSE)
+
+fossil_CO2_totals_by_country <- vroom::vroom(here("data/CO2/fossil_CO2_totals_by_country.csv"),delim = ";", show_col_types = FALSE)
+
+coal_revenu <- vroom::vroom(here("data/coal_revenu.csv"),show_col_types = FALSE)
 
 industrial_production_growth <- vroom::vroom(here("data/industrial_production_growth.csv"), show_col_types = FALSE)
 
@@ -116,13 +126,15 @@ gross_capital <- gross_capital |>
 # We put NA instead of blanks
 gross_capital <- gross_capital %>% mutate_all(~na_if(., ""))
 
-# Then we re-iterate the process for each variable.
+
 ```
 
 #### cleaning of gdp_growth
 
 ```{r}
-gdp_growth <- gdp_growth |> select(Country.Name, X2019) |> rename(country = Country.Name, gdp.growth = X2019)
+gdp_growth <- gdp_growth |> dplyr::select(Country.Name, X2019) 
+
+colnames(gross_capital) <- c("country","gdp.growth")
 
 gdp_growth[gdp_growth == ''] <- NA
 ```
@@ -286,7 +298,7 @@ economic_growth_dataset <- inner_join(all_gdp_gross_capital, pop_growth_urban_po
 
 ### Variables description
 
-CO2 emissions : Carbon dioxide emissions from consumption of energy is the total amount of carbon dioxide, measured in metric tons, released by burning fossil fuels in the process of producing and consuming energy. This is usually the main variable used to measure how polluting a country is.
+CO2 emissions : Carbon dioxide emissions from consumption of energy is the total amount of carbon dioxide, measured in metric tons, released by burning fossil fuels in the process of producing and consuming energy. This is usually the main variable used to measure how polluting a country is. We will use four different datasets showing the CO2 emissions by sector and country, per capita per country, totals per country, and totals by macro regions.
 
 Energy consumption per capita : measures the total amount of consumed energy divided by a country's population, reported in Btu per person. Linking energy consumption per capita to pollution is vital as higher consumption often translates to increased emissions from energy sources like fossil fuels, contributing significantly to air and greenhouse gas pollution.
 
@@ -297,6 +309,8 @@ Industrial_production_growth : annual percentage increase in industrial producti
 Renewable energy consumption : Renewable energy consumption is the share of renewable energy in total final energy consumption. We expect this percentage to be higher in developed countries.
 
 ### Cleaning the data sets
+
+Let's creat a first dataset containing the informative variables for the year 2019 only.
 
 ```{r}
 # We keep only the relevant columns
@@ -395,6 +409,7 @@ table_renewable_energy_consumption <- renewable_energy_consumption |>
 knitr::kable(table_renewable_energy_consumption)
 ```
 
+
 ### Data joining
 
 ```{r}
@@ -403,9 +418,11 @@ temp_merged <- merge(co2, energy_consumption, by = "country", all = FALSE)
 temp_merged <- merge(temp_merged, industrial_production_growth, by = "country", all = FALSE)
 temp_merged <- merge(temp_merged, coal_revenu, by = "country", all = FALSE)
 # we merge the temporary data set obtained with the last one with name again
-energy_dataset <- merge(temp_merged, renewable_energy_consumption, by = "country", all = FALSE)
+energy_dataset2019 <- merge(temp_merged, renewable_energy_consumption, by = "country", all = FALSE)
 
 ```
+
+We create a dataset containing the information concerning the year 2019. We will use it order to have an overview of the situation using relatively recent data given in instantaneous section.
 
 ## Final Data set
 
