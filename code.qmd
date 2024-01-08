@@ -46,7 +46,6 @@ Joaquim Bamba & Amandine Godefroy
 ## Data importation
 
 ```{r}
-#| eval: false
 #| echo: false
 #| warning: false
 
@@ -58,7 +57,7 @@ here::i_am("project.Rproj")
 ```
 
 ```{r}
-#| eval: false
+
 #| echo: false
 #| warning: false
 
@@ -110,7 +109,9 @@ We will only keep the values for the year 2019 in our study when we have the cho
 
 ```{r}
 # We keep only the necessary columns
-gross_capital <- gross_capital |> select(Country.Name, X2019) |> rename(country = Country.Name, gross.capital = X2019) 
+gross_capital <- gross_capital |>
+  select(Country.Name, X2019) |>
+  rename(country = Country.Name, gross.capital = X2019) 
 
 # We put NA instead of blanks
 gross_capital <- gross_capital %>% mutate_all(~na_if(., ""))
@@ -269,7 +270,7 @@ We need to create a data base with all the economic growth relative variables.
 
 ```{r}
 # In order to do so we join each of the data base two by two
-gdp_gdp_growth <- inner_join(gdp, gdp_growth, by=join_by(country))
+gdp_gdp_growth <- inner_join(GDP, gdp_growth, by=join_by(country))
 
 all_gdp <- inner_join(gdp_gdp_growth, gdp_by_sector, by=join_by(country))
 
