@@ -113,28 +113,47 @@ Urban population (in percentage of the total population) : refers to people livi
 
 ### Cleaning the data sets
 
-We will only keep the values for the year 2019 in our study when we have the choice of the year.
-
 #### cleaning of gross_capital
 
 ```{r}
-# We keep only the necessary columns
-gross_capital <- gross_capital |>
-  select(Country.Name, X2019) |>
-  rename(country = Country.Name, gross.capital = X2019) 
+# We erase the unnecessary columns
+gross_capital <- gross_capital |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+
+# We change the name of the columns
+dput(names(gross_capital))
+names(gross_capital) <- c("country", "gross.capital.1960", "gross.capital.1961", "gross.capital.1962", "gross.capital.1963", "gross.capital.1964", "gross.capital.1965", "gross.capital.1966", 
+"gross.capital.1967", "gross.capital.1968", "gross.capital.1969", "gross.capital.1970", "gross.capital.1971", "gross.capital.1972", "gross.capital.1973", 
+"gross.capital.1974", "gross.capital.1975", "gross.capital.1976", "gross.capital.1977", "gross.capital.1978", "gross.capital.1979", "gross.capital.1980", 
+"gross.capital.1981", "gross.capital.1982", "gross.capital.1983", "gross.capital.1984", "gross.capital.1985", "gross.capital.1986", "gross.capital.1987", 
+"gross.capital.1988", "gross.capital.1989", "gross.capital.1990", "gross.capital.1991", "gross.capital.1992", "gross.capital.1993", "gross.capital.1994", 
+"gross.capital.1995", "gross.capital.1996", "gross.capital.1997", "gross.capital.1998", "gross.capital.1999", "gross.capital.2000", "gross.capital.2001", 
+"gross.capital.2002", "gross.capital.2003", "gross.capital.2004", "gross.capital.2005", "gross.capital.2006", "gross.capital.2007", "gross.capital.2008", 
+"gross.capital.2009", "gross.capital.2010", "gross.capital.2011", "gross.capital.2012", "gross.capital.2013", "gross.capital.2014", "gross.capital.2015", 
+"gross.capital.2016", "gross.capital.2017", "gross.capital.2018", "gross.capital.2019", "gross.capital.2020", "gross.capital.2021", "gross.capital.2022"
+)
 
 # We put NA instead of blanks
 gross_capital <- gross_capital %>% mutate_all(~na_if(., ""))
 
-
+# Then we re-iterate the process for each variable.
 ```
 
 #### cleaning of gdp_growth
 
 ```{r}
-gdp_growth <- gdp_growth |> dplyr::select(Country.Name, X2019) 
+gdp_growth <- gdp_growth |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
 
-colnames(gross_capital) <- c("country","gdp.growth")
+dput(names(gdp_growth))
+names(gdp_growth) <- c("country", "gdp.growth.1960", "gdp.growth.1961", "gdp.growth.1962", "gdp.growth.1963", "gdp.growth.1964", 
+"gdp.growth.1965", "gdp.growth.1966", "gdp.growth.1967", "gdp.growth.1968", "gdp.growth.1969", "gdp.growth.1970", "gdp.growth.1971", 
+"gdp.growth.1972", "gdp.growth.1973", "gdp.growth.1974", "gdp.growth.1975", "gdp.growth.1976", "gdp.growth.1977", "gdp.growth.1978", 
+"gdp.growth.1979", "gdp.growth.1980", "gdp.growth.1981", "gdp.growth.1982", "gdp.growth.1983", "gdp.growth.1984", "gdp.growth.1985", 
+"gdp.growth.1986", "gdp.growth.1987", "gdp.growth.1988", "gdp.growth.1989", "gdp.growth.1990", "gdp.growth.1991", "gdp.growth.1992", 
+"gdp.growth.1993", "gdp.growth.1994", "gdp.growth.1995", "gdp.growth.1996", "gdp.growth.1997", "gdp.growth.1998", "gdp.growth.1999", 
+"gdp.growth.2000", "gdp.growth.2001", "gdp.growth.2002", "gdp.growth.2003", "gdp.growth.2004", "gdp.growth.2005", "gdp.growth.2006", 
+"gdp.growth.2007", "gdp.growth.2008", "gdp.growth.2009", "gdp.growth.2010", "gdp.growth.2011", "gdp.growth.2012", "gdp.growth.2013", 
+"gdp.growth.2014", "gdp.growth.2015", "gdp.growth.2016", "gdp.growth.2017", "gdp.growth.2018", "gdp.growth.2019", "gdp.growth.2020", 
+"gdp.growth.2021", "gdp.growth.2022")
 
 gdp_growth[gdp_growth == ''] <- NA
 ```
@@ -142,7 +161,19 @@ gdp_growth[gdp_growth == ''] <- NA
 #### cleaning of GDP
 
 ```{r}
-GDP <- GDP |>  select(Country.Name, X2019) |> rename(country = Country.Name, gdp = X2019)
+GDP <- GDP |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+
+dput(names(GDP))
+names(GDP) <- c("country", "gdp.1960", "gdp.1961", "gdp.1962", "gdp.1963", "gdp.1964", 
+"gdp.1965", "gdp.1966", "gdp.1967", "gdp.1968", "gdp.1969", "gdp.1970", "gdp.1971", 
+"gdp.1972", "gdp.1973", "gdp.1974", "gdp..1975", "gdp.1976", "gdp.1977", "gdp.1978", 
+"gdp.1979", "gdp.1980", "gdp.1981", "gdp.1982", "gdp.1983", "gdp.1984", "gdp.1985", 
+"gdp.1986", "gdp.1987", "gdp.1988", "gdp.1989", "gdp.1990", "gdp.1991", "gdp.1992", 
+"gdp.1993", "gdp.1994", "gdp.1995", "gdp.1996", "gdp.1997", "gdp.1998", "gdp.1999", 
+"gdp.2000", "gdp.2001", "gdp.2002", "gdp.2003", "gdp.2004", "gdp.2005", "gdp.2006", 
+"gdp.2007", "gdp.2008", "gdp.2009", "gdp.2010", "gdp.2011", "gdp.2012", "gdp.2013", 
+"gdp.2014", "gdp.2015", "gdp.2016", "gdp.2017", "gdp.2018", "gdp.2019", "gdp.2020", 
+"gdp.2021", "gdp.2022")
 
 GDP <- GDP %>% mutate_all(~na_if(., ""))
 ```
@@ -150,11 +181,15 @@ GDP <- GDP %>% mutate_all(~na_if(., ""))
 #### cleaning of gdp_by_sector
 
 ```{r}
-gdp_by_sector <- gdp_by_sector |> select(X, X.5, X.4, X.3, X.2) |>
-  rename(gdp.agriculture = X.2,
-         gdp.industry = X.3,
-         gdp.manufacturing = X.4,
-         gdp.services = X.5,
+gdp_by_sector <- gdp_by_sector |> select(-Gross.domestic.product, -X.1) |>
+  rename(gdp.agriculture.2010 = Agriculture,
+         gdp.agriculture.2020 = X.2,
+         gdp.industry.2010 = Industry,
+         gdp.industry.2020 = X.3,
+         gdp.manufacturing.2010 = Manufacturing,
+         gdp.manufacturing.2020 = X.4,
+         gdp.services.2010 = Services,
+         gdp.services.2020= X.5,
          country = X)
 
 # We suppress the unnecessary rows
@@ -167,7 +202,19 @@ gdp_by_sector <- gdp_by_sector %>% mutate_all(~na_if(., ".."))
 #### cleaning of population_growth
 
 ```{r}
-population_growth <- population_growth |>  select(Country.Name, X2019) |> rename(country = Country.Name, population.growth = X2019)
+population_growth <- population_growth |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+
+dput((names(population_growth)))
+names(population_growth) <- c("country", "population.growth.1960", "population.growth.1961", "population.growth.1962", "population.growth.1963", "population.growth.1964", 
+"population.growth.1965", "population.growth.1966", "population.growth.1967", "population.growth.1968", "population.growth.1969", "population.growth.1970", "population.growth.1971", 
+"population.growth.1972", "population.growth.1973", "population.growth.1974", "population.growth.1975", "population.growth.1976", "population.growth.1977", "population.growth.1978", 
+"population.growth.1979", "population.growth.1980", "population.growth.1981", "population.growth.1982", "population.growth.1983", "population.growth.1984", "population.growth.1985", 
+"population.growth.1986", "population.growth.1987", "population.growth.1988", "population.growth.1989", "population.growth.1990", "population.growth.1991", "population.growth.1992", 
+"population.growth.1993", "population.growth.1994", "population.growth.1995", "population.growth.1996", "population.growth.1997", "population.growth.1998", "population.growth.1999", 
+"population.growth.2000", "population.growth.2001", "population.growth.2002", "population.growth.2003", "population.growth.2004", "population.growth.2005", "population.growth.2006", 
+"population.growth.2007", "population.growth.2008", "population.growth.2009", "population.growth.2010", "population.growth.2011", "population.growth.2012", "population.growth.2013", 
+"population.growth.2014", "population.growth.2015", "population.growth.2016", "population.growth.2017", "population.growth.2018", "population.growth.2019", "population.growth.2020", 
+"population.growth.2021", "population.growth.2022")
 
 population_growth[population_growth == ''] <- NA
 ```
@@ -175,7 +222,19 @@ population_growth[population_growth == ''] <- NA
 #### cleaning of urban_population
 
 ```{r}
-urban_population <- urban_population |>  select(Country.Name, X2019) |> rename(country = Country.Name, urban.population = X2019)
+urban_population <- urban_population |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
+
+dput((names(urban_population)))
+names(urban_population) <- c("country", "urban.population.1960", "urban.population.1961", "urban.population.1962", "urban.population.1963", "urban.population.1964", 
+"urban.population.1965", "urban.population.1966", "urban.population.1967", "urban.population.1968", "urban.population.1969", "urban.population.1970", "urban.population.1971", 
+"urban.population.1972", "urban.population.1973", "urban.population.1974", "urban.population.1975", "urban.population.1976", "urban.population.1977", "urban.population.1978", 
+"urban.population.1979", "urban.population.1980", "urban.population.1981", "urban.population.1982", "urban.population.1983", "urban.population.1984", "urban.population.1985", 
+"urban.population.1986", "urban.population.1987", "urban.population.1988", "urban.population.1989", "urban.population.1990", "urban.population.1991", "urban.population.1992", 
+"urban.population.1993", "urban.population.1994", "urban.population.1995", "urban.population.1996", "urban.population.1997", "urban.population.1998", "urban.population.1999", 
+"urban.population.2000", "urban.population.2001", "urban.population.2002", "urban.population.2003", "urban.population.2004", "urban.population.2005", "urban.population.2006", 
+"urban.population.2007", "urban.population.2008", "urban.population.2009", "urban.population.2010", "urban.population.2011", "urban.population.2012", "urban.population.2013", 
+"urban.population.2014", "urban.population.2015", "urban.population.2016", "urban.population.2017", "urban.population.2018", "urban.population.2019", "urban.population.2020", 
+"urban.population.2021", "urban.population.2022")
 
 urban_population <- urban_population %>% mutate_all(~na_if(., ""))
 ```
@@ -189,10 +248,10 @@ table_gdp <- GDP |>
   summarise(
             "Nb of rows" =nrow(GDP),
             "Nb of columns" = ncol(GDP),
-            "Mean" = mean(as.numeric(gdp), na.rm = TRUE),
-            "Median" = median(gdp, na.rm = TRUE),
-            "Min" = min(gdp, na.rm = TRUE),
-            "Max" = max(gdp, na.rm = TRUE)
+            "Mean" = mean(as.numeric(gdp.2019), na.rm = TRUE),
+            "Median" = median(gdp.2019, na.rm = TRUE),
+            "Min" = min(gdp.2019, na.rm = TRUE),
+            "Max" = max(gdp.2019, na.rm = TRUE)
             )
 knitr::kable(table_gdp)
 ```
@@ -204,10 +263,10 @@ table_gdp_growth <- gdp_growth|>
   summarise(
             "Nb of rows"=nrow(gdp_growth),
             "Nb of columns"=ncol(gdp_growth),
-            "Mean" = mean(as.numeric(gdp.growth), na.rm = TRUE),
-            "Median" = median(as.numeric(gdp.growth), na.rm = TRUE),
-            "Min" = min(gdp.growth, na.rm = TRUE),
-            "Max" = max(gdp.growth, na.rm = TRUE)
+            "Mean" = mean(as.numeric(gdp.growth.2019), na.rm = TRUE),
+            "Median" = median(as.numeric(gdp.growth.2019), na.rm = TRUE),
+            "Min" = min(gdp.growth.2019, na.rm = TRUE),
+            "Max" = max(gdp.growth.2019, na.rm = TRUE)
             )
 knitr::kable(table_gdp_growth)
 ```
@@ -219,10 +278,10 @@ table_gross_capital <- gross_capital|>
   summarise(
             "Nb of rows"=nrow(gross_capital),
             "Nb of columns"=ncol(gross_capital),
-            "Mean" = mean(as.numeric(gross.capital), na.rm = TRUE),
-            "Median" = median(gross.capital, na.rm = TRUE),
-            "Min" = min(gross.capital, na.rm = TRUE),
-            "Max" = max(gross.capital, na.rm = TRUE)
+            "Mean" = mean(as.numeric(gross.capital.2019), na.rm = TRUE),
+            "Median" = median(gross.capital.2019, na.rm = TRUE),
+            "Min" = min(gross.capital.2019, na.rm = TRUE),
+            "Max" = max(gross.capital.2019, na.rm = TRUE)
             )
 knitr::kable(table_gross_capital)
 ```
@@ -234,15 +293,15 @@ table_gdp_by_sector <- gdp_by_sector |>
   summarise(
     "Nb of rows" = nrow(gdp_by_sector),
     "Nb of columns" = ncol(gdp_by_sector),
-    "Mean.services" = mean(as.numeric(gdp.services), na.rm = TRUE),
-    "Median.services" = median(as.numeric(gdp.services), na.rm = TRUE),
-    "Mean.manufacturing" = mean(as.numeric(gdp.manufacturing), na.rm = TRUE),
-    "Median.manufacturing" = median(as.numeric(gdp.manufacturing), na.rm = TRUE),
-    "Mean.industry" = mean(as.numeric(gdp.industry), na.rm = TRUE),
-    "Median.industry" = median(as.numeric(gdp.industry), na.rm = TRUE),
-    "Mean.agriculture" = mean(as.numeric(gdp.agriculture), na.rm = TRUE),
-    "Median.agriculture" = median(as.numeric(gdp.agriculture), na.rm = TRUE)
-  )
+    "Mean.services" = mean(as.numeric(gdp.services.2020), na.rm = TRUE),
+    "Median.services" = median(as.numeric(gdp.services.2020), na.rm = TRUE),
+    "Mean.manufacturing" = mean(as.numeric(gdp.manufacturing.2020), na.rm = TRUE),
+    "Median.manufacturing" = median(as.numeric(gdp.manufacturing.2020), na.rm = TRUE),
+    "Mean.industry" = mean(as.numeric(gdp.industry.2020), na.rm = TRUE),
+    "Median.industry" = median(as.numeric(gdp.industry.2020), na.rm = TRUE),
+    "Mean.agriculture" = mean(as.numeric(gdp.agriculture.2020, na.rm = TRUE),
+    "Median.agriculture" = median(as.numeric(gdp.agriculture.2020), na.rm = TRUE)))
+
 knitr::kable(table_gdp_by_sector)
 ```
 
@@ -253,10 +312,10 @@ table_population_growth <- population_growth |>
   summarise(
     "Nb of rows" = nrow(population_growth),
     "Nb of columns" = ncol(population_growth),
-    "Mean" = mean(as.numeric(population.growth), na.rm = TRUE),
-    "Median" = median(population.growth, na.rm = TRUE),
-    "Min" = min(population.growth, na.rm = TRUE),
-    "Max" = max(population.growth, na.rm = TRUE)
+    "Mean" = mean(as.numeric(population.growth.2019), na.rm = TRUE),
+    "Median" = median(population.growth.2019, na.rm = TRUE),
+    "Min" = min(population.growth.2019, na.rm = TRUE),
+    "Max" = max(population.growth.2019, na.rm = TRUE)
   )
 knitr::kable(table_population_growth)
 ```
@@ -268,10 +327,10 @@ table_urban_population <- urban_population |>
   summarise(
     "Nb of rows" = nrow(urban_population),
     "Nb of columns" = ncol(urban_population),
-    "Mean" = mean(as.numeric(urban.population), na.rm = TRUE),
-    "Median" = median(urban.population, na.rm = TRUE),
-    "Min" = min(urban.population, na.rm = TRUE),
-    "Max" = max(urban.population, na.rm = TRUE)
+    "Mean" = mean(as.numeric(urban.population.2019), na.rm = TRUE),
+    "Median" = median(urban.population.2019, na.rm = TRUE),
+    "Min" = min(urban.population.2019, na.rm = TRUE),
+    "Max" = max(urban.population.2019, na.rm = TRUE)
   )
 knitr::kable(table_urban_population)
 ```
@@ -310,7 +369,7 @@ Renewable energy consumption : Renewable energy consumption is the share of rene
 
 ### Cleaning the data sets
 
-Let's creat a first dataset containing the informative variables for the year 2019 only.
+Let's create a first dataset containing the informative variables for the year 2019 only.
 
 ```{r}
 # We keep only the relevant columns
@@ -429,7 +488,7 @@ We create a dataset containing the information concerning the year 2019. We will
 ```{r}
 # We merge our economic growth dataset and our energy dataset 
 
-dataset <- inner_join(economic_growth_dataset, energy_dataset, by=join_by(country))
+dataset <- inner_join(economic_growth_dataset, energy_dataset2019, by=join_by(country))
 ```
 
 ## Research question
