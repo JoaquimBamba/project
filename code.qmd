@@ -435,7 +435,10 @@ dataset <- inner_join(economic_growth_dataset, energy_dataset, by=join_by(countr
 
 ## Research question
 
-The Environmental Kuznets Curve (EKC) suggests that environmental degradation initially worsens as a country begins industrialization and economic development. In the early stages of economic growth, the increased production and consumption often lead to higher pollution levels, resource depletion, and environmental damage. This phase is characterized by rising pollution levels, as industries prioritize economic growth over environmental concerns. However, according to the EKC hypothesis, as a country's income or level of development continues to increase, there reaches a turning point where environmental degradation begins to decrease.
+The Kuznets curve, originating from Simon Kuznets' research on economic growth during the 1950s, illustrates a U-shaped correlation between a nation's developmental stage and income inequality. In 1991, Grossman and Krueger expanded this concept to environmental considerations. However, it wasn't until Panayotou's 1993 article that the Environmental Kuznets Curve (EKC) was formally introduced.
+
+The EKC proposes that in the early phases of economic progress, there is minimal concern for environmental issues. As income levels rise sufficiently to meet essential needs, a pivotal threshold (known as the turning point) is reached, prompting heightened environmental awareness and a reversal in trends. Beyond this threshold, economic advancement aligns with enhanced environmental conditions, specifically a decline in pollution. Thus, it suggests an inverse U-shaped association between pollution and economic development.
+
 
 We will try to see if a country CO2 emission are effectively explained by its economic and industrial development.
 
