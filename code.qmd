@@ -659,15 +659,11 @@ Now lets plot the CO2 emissions per country depending on their GDP.
 ```{r}
 growth_CO2_50_first<-growth_CO2|>group_by(country)
 
-growth_CO2_50_first<-growth_CO2_50_first[4929:4960,]
+growth_CO2_50_first<-subset(growth_CO2, country == "United States")
 
 ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
   geom_point(na.rm=T)+
-  labs(title = "Croissance du CO2 par rapport au PIB (US 1970-2021)") +
-  theme_minimal()+
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks = element_blank())
+  labs(title = "Croissance du CO2 par rapport au PIB (US 1970-2021)") 
 
   
 ```
@@ -675,7 +671,7 @@ ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
 ```{r}
 growth_CO2_coutry<-growth_CO2|>select(contains("China"))
 
-growth_CO2_50_first<-growth_CO2[2433:2464,]
+growth_CO2_50_first<-subset(growth_CO2, country == "China")
 
 ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
   geom_point(na.rm=T)+
@@ -689,7 +685,7 @@ ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
 ```
 ```{r}
 
-growth_CO2_50_first<-growth_CO2[2433:2464,]
+growth_CO2_50_first<-subset(growth_CO2, country == "Japan")
 
 ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
   geom_point(na.rm=T)+
@@ -725,7 +721,7 @@ ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
 ```
 
 
-By plotting the CO2 emissions of top 5 world economies, we spot that the relation is clearly verified in China. In the United Kingdom and in Germany, we observe negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship. 
+By plotting the CO2 emissions of top 5 world economies, we spot that the relation is clearly positive in China. In the United Kingdom and in Germany, we observe negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship. 
 
 ### Western and Eastern European countries
 
@@ -747,7 +743,7 @@ ggplot(growth_CO2_western_european_countries, aes(x = GDP, y = CO2_by_country, c
 ```
 By plotting the Western European countries only, we can clearly spot reverse U relationship for Belgium and the Netherlands however, the data of Sweden, Luxembourg are following the former intuition we had about Germany and the United Kingdom we a purely negative relationship (second part of the reverse U).
 
-To confirm the intuition, let's plot the Eastern Europe countries data considering that they developped later than Eastern ones
+To confirm the intuition, let's plot the Eastern Europe countries data considering that they developped later than Eastern ones.
 
 
 ```{r}
@@ -784,7 +780,7 @@ plot2<-ggplot(growth_CO2_eastern_european_countries2, aes(x = GDP, y = CO2_by_co
 grid.arrange(plot1, plot2, nrow = 2)
 
 ```
-Indeed, the expected reverse U relationship is clearer for Easter European countries than for the Western ones.
+Indeed, the expected reverse U relationship is clearer for Eastern European countries than for the Western ones even if we are still able to spot a negative relationship between the variables for the most developed of them such as Poland.
 
 ### Subsaharan African Countries
 
@@ -849,6 +845,34 @@ grid.arrange(plot3, plot4, nrow = 2)
 ```
 
 When we pay attention to the Subsaharan African coutries that are still developping the relation relation between CO2 emissions and GDP seems to be positive considering that these country are still on the first part of reverse U relationship between these two variables.
+
+South Africa appears as an outliner since it an emerging economy. 
+
+#### Emerging economies 
+
+During the COP assemblies, the BRICS are often pointed out as major polluters by developped coutries.
+
+They respond by saying that their increasing amout of CO2 emission is a simple consequence of their skyrocketting development and that they will pollute less as soon as they will be as developped as the Western countries.
+
+```{r}
+
+emerging_countries <- c("South Africa", "Russia", "Brazil", "India", "China")
+
+
+# Filter data for Western European countries
+growth_CO2_emerging_countries <- subset(growth_CO2, country %in% emerging_countries)
+
+# Use ggplot with different color for each country
+ggplot(growth_CO2_emerging_countries, aes(x = GDP, y = CO2_by_country, color = country)) +
+  geom_point(na.rm = TRUE) +
+  labs(title = "CO2 Growth vs GDP (Emerging economies 1970-2021)") +
+  theme_minimal()+
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank())
+
+```
+When plotting the data conserning the BRICS, we see that the relationship is effectively positive over time.
 
 ## Statistical tests : 
 
@@ -968,12 +992,12 @@ lm( CO2_by_country ~ GDP + GDP_carre, data = high_income_countries)
 Lets look for a correlation between the CO2 emissions of a country and its wealth. In order to do so, we represente the correlation with a graph.
 
 ```{r}
-ggplot(low_income_countries, aes(x = CO2_by_country, y = GDP)) +
+ggplot(low_income_countries, aes(x = GDP, y =CO2_by_country)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE, color = "blue") +
   labs(title = "Correlation between the CO2 emission and the wealth of low income countries ",
-       x = "CO2 level of emission",
-       y = "GDP") +
+       x = "GDP",
+       y = "CO2 level of emission") +
   theme_minimal()
 ```
 ```{r}
