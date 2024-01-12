@@ -873,7 +873,7 @@ SA_GDP<-growth_CO2_SA_countries|>pull(GDP)
 
 
 ```
-## Economitric analysis
+## Econometric analysis
 
 To confirm the existence of a U shape relation between the CO2 emissions and the wealth we will use the OLS method on our data. In order to do so we will made this analysis on ? distinct panels of country classed by their degrees of development.
 
@@ -963,3 +963,47 @@ lm( CO2_by_country ~ GDP + GDP_carre, data = upper_middle_income_countries)
 ```{r}
 lm( CO2_by_country ~ GDP + GDP_carre, data = high_income_countries)
 ```
+
+### Correlation
+Lets look for a correlation between the CO2 emissions of a country and its wealth. In order to do so, we represente the correlation with a graph.
+
+```{r}
+ggplot(low_income_countries, aes(x = CO2_by_country, y = GDP)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Correlation between the CO2 emission and the wealth of low income countries ",
+       x = "CO2 level of emission",
+       y = "GDP") +
+  theme_minimal()
+```
+```{r}
+ggplot(high_income_countries, aes(x = CO2_by_country, y = GDP)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Correlation between the CO2 emission and the wealth of high income countries ",
+       x = "CO2 level of emission",
+       y = "GDP") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(lower_middle_income_countries, aes(x = CO2_by_country, y = GDP)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Correlation between the CO2 emission and the wealth of lower middle income countries ",
+       x = "CO2 level of emission",
+       y = "GDP") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(upper_middle_income_countries, aes(x = CO2_by_country, y = GDP)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Correlation between the CO2 emission and the wealth of upper middle income countries ",
+       x = "CO2 level of emission",
+       y = "GDP") +
+  theme_minimal()
+```
+
+Calculation of the coefficient of correlation
