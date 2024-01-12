@@ -7,6 +7,11 @@ message: false
 editor: visual
 ---
 
+<style>
+  body {
+    text-align: justify}
+</style>
+
 # Data management project :
 
 Joaquim Bamba & Amandine Godefroy
@@ -143,6 +148,9 @@ gross_capital <- gross_capital %>%
 # We put NA instead of blanks
 gross_capital <- gross_capital %>% mutate_all(~na_if(., ""))
 
+# We put points instead of commas
+gross_capital$gross_capital <- gsub(",", ".", gross_capital$gross_capital, fixed = TRUE)
+
 # We specify that the data are numeric
 gross_capital$gross_capital<-as.numeric(gross_capital$gross_capital)
 
@@ -165,8 +173,9 @@ gdp_growth <- gdp_growth %>%
 
 gdp_growth[gdp_growth == ''] <- NA
 
-gdp_growth$gdp_growth<-as.numeric(gdp_growth$gdp_growth)
+gdp_growth$gdp_growth <- gsub(",", ".", gdp_growth$gdp_growth, fixed = TRUE)
 
+gdp_growth$gdp_growth<-as.numeric(gdp_growth$gdp_growth)
 ```
 
 #### cleaning of GDP
@@ -185,11 +194,13 @@ GDP <- GDP %>%
 
 GDP <- GDP %>% mutate_all(~na_if(., ""))
 
+GDP$GDP <- gsub(",", ".", GDP$GDP, fixed = TRUE)
+
 GDP$GDP<-as.numeric(GDP$GDP)
 
 ```
 
-#### cleaning og gdp_per_capita
+#### cleaning of gdp_per_capita
 
 ```{r}
 gdp_per_capita <- gdp_per_capita |>  select(-Indicator.Name, -Indicator.Code, -Country.Code)
@@ -205,10 +216,11 @@ gdp_per_capita <- gdp_per_capita %>%
 
 gdp_per_capita <- gdp_per_capita %>% mutate_all(~na_if(., ""))
 
+gdp_per_capita$gdp_per_capita <- gsub(",", ".", gdp_per_capita$gdp_per_capita, fixed = TRUE)
+
 gdp_per_capita$gdp_per_capita<-as.numeric(gdp_per_capita$gdp_per_capita)
 
 ```
-
 
 #### cleaning of gdp_by_sector
 
@@ -247,6 +259,8 @@ population_growth <- population_growth %>%
 
 population_growth[population_growth == ''] <- NA
 
+population_growth$population_growth <- gsub(",", ".", population_growth$population_growth, fixed = TRUE)
+
 population_growth$population_growth<-as.numeric(population_growth$population_growth)
 
 ```
@@ -266,6 +280,8 @@ urban_population <- urban_population %>%
   rename(country = Country.Name)
 
 urban_population <- urban_population %>% mutate_all(~na_if(., ""))
+
+urban_population$urban_population <- gsub(",", ".", urban_population$urban_population, fixed = TRUE)
 
 urban_population$urban_population<-as.numeric(urban_population$urban_population)
 ```
@@ -288,6 +304,7 @@ knitr::kable(table_gdp)
 ```
 
 #### gdp_per_capita
+
 ```{r}
 table_gdp_per_capita <- gdp_per_capita |>
   summarise(
@@ -512,7 +529,8 @@ table_renewable_energy_consumption <- renewable_energy_consumption |>
   )
 knitr::kable(table_renewable_energy_consumption)
 ```
-#### CO2 by country 
+
+#### CO2 by country
 
 Let's use the CO2 data given year by year.
 
@@ -554,7 +572,7 @@ fossil_CO2_per_GDP_by_country$CO2_per_GDP_by_country<-as.numeric(fossil_CO2_per_
 
 ```
 
-#### CO2 by sector by country 
+#### CO2 by sector by country
 
 ```{r}
 #We get ride of the useless columns
@@ -605,9 +623,7 @@ We create a dataset containing the information concerning the year 2019. We will
 growth_CO2 <- inner_join(CO2_totals_GDP_sector, economic_growth_dataset, by=c("country","year"))
 ```
 
-
-
-for 2019 : 
+for 2019 :
 
 ```{r}
 # We merge our economic growth dataset and our energy dataset 
@@ -622,11 +638,9 @@ The Kuznets curve, originating from Simon Kuznets' research on economic growth d
 
 The EKC proposes that in the early phases of economic progress, there is minimal concern for environmental issues. As income levels rise sufficiently to meet essential needs, a pivotal threshold (known as the turning point) is reached, prompting heightened environmental awareness and a reversal in trends. Beyond this threshold, economic advancement aligns with enhanced environmental conditions, specifically a decline in pollution. Thus, it suggests an inverse U-shaped association between pollution and economic development.
 
-
 We will try to see if a country CO2 emission are effectively explained by its economic and industrial development.
 
-
-## Graphical representation 
+## Graphical representation
 
 ### Top 5 world economies
 
@@ -648,11 +662,6 @@ ggplot(data = dataset_2019, aes(x = country, y = co2.emissions)) +
 ```
 
 We can spot that CO2 emissions are very unequally distributed. China, India and the US are by far more polluting.
-
-
-
-
-
 
 Now lets plot the CO2 emissions per country depending on their GDP.
 
@@ -683,6 +692,7 @@ ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
 
   
 ```
+
 ```{r}
 
 growth_CO2_50_first<-subset(growth_CO2, country == "Japan")
@@ -694,7 +704,6 @@ ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
 
   
 ```
-
 
 ```{r}
 
@@ -720,8 +729,7 @@ ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
   
 ```
 
-
-By plotting the CO2 emissions of top 5 world economies, we spot that the relation is clearly positive in China. In the United Kingdom and in Germany, we observe negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship. 
+By plotting the CO2 emissions of top 5 world economies, we spot that the relation is clearly positive in China. In the United Kingdom and in Germany, we observe negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship.
 
 ### Western and Eastern European countries
 
@@ -741,10 +749,10 @@ ggplot(growth_CO2_western_european_countries, aes(x = GDP, y = CO2_by_country, c
         axis.ticks = element_blank())
 
 ```
+
 By plotting the Western European countries only, we can clearly spot reverse U relationship for Belgium and the Netherlands however, the data of Sweden, Luxembourg are following the former intuition we had about Germany and the United Kingdom we a purely negative relationship (second part of the reverse U).
 
 To confirm the intuition, let's plot the Eastern Europe countries data considering that they developped later than Eastern ones.
-
 
 ```{r}
 eastern_european_countries1 <- c("Estonia", "Hungary", "Kosovo", "Latvia", "Lithuania","Moldova", "Montenegro", "North Macedonia", "Poland", "Romani
@@ -780,10 +788,10 @@ plot2<-ggplot(growth_CO2_eastern_european_countries2, aes(x = GDP, y = CO2_by_co
 grid.arrange(plot1, plot2, nrow = 2)
 
 ```
+
 Indeed, the expected reverse U relationship is clearer for Eastern European countries than for the Western ones even if we are still able to spot a negative relationship between the variables for the most developed of them such as Poland.
 
 ### Subsaharan African Countries
-
 
 ```{r}
 SA_countries1 <- c("Angola", "Benin", "Botswana", "Burkina Faso", "Burundi", "Cabo Verde", "Cameroon", "Central African Republic", "Chad", "Comoros", "Democratic Republic of the Congo")
@@ -846,9 +854,9 @@ grid.arrange(plot3, plot4, nrow = 2)
 
 When we pay attention to the Subsaharan African coutries that are still developping the relation relation between CO2 emissions and GDP seems to be positive considering that these country are still on the first part of reverse U relationship between these two variables.
 
-South Africa appears as an outliner since it an emerging economy. 
+South Africa appears as an outliner since it an emerging economy.
 
-### Emerging economies 
+### Emerging economies
 
 During the COP assemblies, the BRICS are often pointed out as major polluters by developped coutries.
 
@@ -872,8 +880,8 @@ ggplot(growth_CO2_emerging_countries, aes(x = GDP, y = CO2_by_country, color = c
         axis.ticks = element_blank())
 
 ```
-When plotting the data conserning the BRICS, we see that the relationship is effectively positive over time.
 
+When plotting the data conserning the BRICS, we see that the relationship is effectively positive over time.
 
 ## Econometric analysis
 
@@ -882,13 +890,13 @@ To confirm the existence of a U shape relation between the CO2 emissions and the
 ### Creation of dataframes depending of the countries level of development
 
 We will class the countries into 4 categories according to the mean of their gdp per capita over the period studied. We will divide the countries according to the quantiles of the distribution of their mean gdp per capita.
+
 ```{r}
 gdp_per_capita_mean <- growth_CO2 |> group_by(country) |> summarise(mean(gdp_per_capita, na.rm = T))
 
-#is.na(gdp_per_capita_mean)
-
 summary(gdp_per_capita_mean)
 ```
+
 ```{r}
 low_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)<1236)
 
@@ -900,42 +908,46 @@ high_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_
 ```
 
 ```{r}
-# Traitement des valeurs manquantes
-## Afin de pouvoir au mieux calculer nos régressions, nous retirons les pays contenant des valeurs manquantes
+#| message: false
+#| echo: false
+# Handling missing values
+## To better calculate our regressions, we remove countries with missing values.
 
 ### Low income countries
-low_income_countries |> summarise(anyNA(CO2_by_country))
-low_income_countries |> summarise(anyNA(GDP))
+#low_income_countries |> summarise(anyNA(CO2_by_country))
+#low_income_countries |> summarise(anyNA(GDP))
 
 low_income_countries <- low_income_countries %>%
   group_by(country) %>%
   filter(all(!is.na(GDP)))
 
 ### Lower middle income countries
-lower_middle_income_countries |> summarise(anyNA(CO2_by_country))
-lower_middle_income_countries |> summarise(anyNA(GDP))
+#lower_middle_income_countries |> summarise(anyNA(CO2_by_country))
+#lower_middle_income_countries |> summarise(anyNA(GDP))
 
 lower_middle_income_countries <- lower_middle_income_countries %>%
   group_by(country) %>%
   filter(all(!is.na(GDP)))
 
 ### Upper middle income countries
-upper_middle_income_countries |> summarise(anyNA(CO2_by_country))
-upper_middle_income_countries |> summarise(anyNA(GDP))
+#upper_middle_income_countries |> summarise(anyNA(CO2_by_country))
+#upper_middle_income_countries |> summarise(anyNA(GDP))
 
 upper_middle_income_countries <- upper_middle_income_countries %>%
   group_by(country) %>%
   filter(all(!is.na(GDP)))
 
 ### High income countries
-high_income_countries |> summarise(anyNA(CO2_by_country))
-high_income_countries |> summarise(anyNA(GDP))
+#high_income_countries |> summarise(anyNA(CO2_by_country))
+#high_income_countries |> summarise(anyNA(GDP))
 
 high_income_countries <- high_income_countries %>%
   group_by(country) %>%
   filter(all(!is.na(GDP)))
 ```
-For the regression we need the squarred gdp, thus we add it to our dataframes.
+
+For the regression we need the squared gdp, thus we add it to our dataframes.
+
 ```{r}
 low_income_countries$GDP_carre <- (low_income_countries$GDP)^2
 lower_middle_income_countries$GDP_carre <- (lower_middle_income_countries$GDP)^2
@@ -947,10 +959,11 @@ high_income_countries$GDP_carre <- (high_income_countries$GDP)^2
 
 We will conduct 4 OLS regressions on hte following model :
 
+\[ CO2_i = \beta\_0 + \beta\_1 GDP_i + \beta\_2 GDP\^2_i+\varepsilon\_i \]
 
-\[ CO2_i = \beta_0 + \beta_1 GDP_i + \beta_2 GDP^2_i+\varepsilon_i \]
+$$ CO2_i = \beta\_0 + \beta\_1 GDP_i + \beta\_2 GDP^2_i+\varepsilon\_i$$
 
-We regress the CO2 on the GDP and the GDP squared for each country of the group for each year. Having a reverse U relationship means that the coefficient of the GDP and the GDP squared have to be respectivevely positive and negative.
+We regress the CO2 on the GDP and the GDP squared for each country of the group for each year. Having a reverse U relationship means that the coefficient of the GDP and the GDP squared have to be respectively positive and negative.
 
 #### Low income countries
 
@@ -969,6 +982,7 @@ ols_lower_middle_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre, data 
 resume_ols_lower_middle_income_countries <- summary(ols_lower_middle_income_countries)
 print(resume_ols_lower_middle_income_countries$coefficients)
 ```
+
 #### Upper middle income countries
 
 ```{r}
@@ -976,6 +990,7 @@ ols_upper_middle_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre, data 
 resume_ols_upper_middle_income_countries <- summary(ols_upper_middle_income_countries)
 print(resume_ols_upper_middle_income_countries$coefficients)
 ```
+
 #### High income countries
 
 ```{r}
@@ -983,12 +998,11 @@ ols_high_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre, data = high_i
 resume_ols_high_income_countries <- summary(ols_high_income_countries)
 print(resume_ols_high_income_countries$coefficients)
 ```
-For each model, both variables are significant (their p-value is <1%).
-The coefficient of the GDP is positive and the one of the GDP squared is negative.
-Thus we can validate the existence of an EKC for each group of countries with a turning point highlighted by the significance of the GDP_carre's coefficient.
 
+For each model, both variables are significant (their p-value is \<1%). The coefficient of the GDP is positive and the one of the GDP squared is negative. Thus we can validate the existence of an EKC for each group of countries with a turning point highlighted by the significance of the GDP_carre's coefficient.
 
 ### Correlation
+
 Lets look for a correlation between the CO2 emissions of a country and its wealth. In order to do so, we represente the correlation with a graph.
 
 ```{r}
@@ -1000,6 +1014,7 @@ ggplot(low_income_countries, aes(x = GDP, y =CO2_by_country)) +
        y = "CO2 level of emission") +
   theme_minimal()
 ```
+
 ```{r}
 ggplot(high_income_countries, aes(x = CO2_by_country, y = GDP)) +
   geom_point() +
@@ -1052,12 +1067,34 @@ print(cor_matrix)
 corrplot(cor_matrix, method = "circle", tl.col = "black", tl.srt = 45)
 ```
 
-
 ### Khi-2 test
+
+$$ H_0 : \text{CO2 and GDP are independent} $$
+$$ H_1 : \text{CO2 and GDP are dependent} $$
+
 
 ```{r}
 
+low_income_chi2 <- chisq.test(low_income_countries[, c("CO2_by_country", "GDP")])
 
-
+# Afficher les résultats du test
+print(low_income_chi2)
 ```
+
+```{r}
+
+lower_middle_income_chi2 <- chisq.test(lower_middle_income_countries[, c("CO2_by_country", "GDP")])
+
+# Afficher les résultats du test
+print(lower_middle_income_chi2)
+```
+```{r}
+
+upper_middle_income_chi2 <- chisq.test(upper_middle_income_countries[, c("CO2_by_country", "GDP")])
+
+# Afficher les résultats du test
+print(upper_middle_income_chi2)
+```
+
+For each group, we can reject $$H_0$$ thanks to the p-value and conclude that CO2 emmissions and GDP are effectively dependant whatever the country's development stage.
 
