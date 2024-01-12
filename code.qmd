@@ -74,11 +74,14 @@ C02_macro_regions <- vroom::vroom(here("data/CO2/LULUCF by macro regions.csv"),d
 
 fossil_CO2_totals_by_country <- vroom::vroom(here("data/CO2/fossil_CO2_totals_by_country.csv"),delim = ";", show_col_types = FALSE)
 
+
 coal_revenu <- vroom::vroom(here("data/coal_revenu.csv"),show_col_types = FALSE)
 
 industrial_production_growth <- vroom::vroom(here("data/industrial_production_growth.csv"), show_col_types = FALSE)
 
 renewable_energy_consumption <- vroom::vroom(here("data/Renewable_energy_consumption.csv"), show_col_types = FALSE)
+
+
 ```
 
 ### a. Creation of the economic growth database
@@ -91,7 +94,7 @@ Annual percentage growth rate of GDP : at market prices based on constant local 
 
 GDP at purchaser's prices (current US\$) : the sum of gross value added by all resident producers in the economy plus any product taxes and minus any subsidies not included in the value of the products.
 
-Gdp per capita : the gdp (in current US\$) divided by midyear population.
+GDP per capita : the gdp (in current US\$) divided by midyear population.
 
 Annual population growth rate for year t : the exponential rate of growth of midyear population from year t-1 to t, expressed as a percentage .
 
@@ -295,11 +298,12 @@ knitr::kable(table_economic_growth)
 
 #### Variables description
 
-CO2 by country : Emission country totals of C02 expressed in kt substance
+CO2 by country : Emission country totals of C02 expressed expressed in Mt CO2/yr. In this report fossil CO2 emissions include sources from fossil fuel use (combustion, flaring), industrial processes (cement, steel, chemicals and urea) and product use.
 
-CO2 per GDP by country :
+CO2 per GDP by country : Emission country totals of C02 expressed expressed in Mt CO2/kUSD/yr. In this report fossil CO2 emissions include sources from fossil fuel use (combustion, flaring), industrial processes (cement, steel, chemicals and urea) and product use.
 
-CO2 by sector and country :
+CO2 by sector and country : Emission country totals  of C02 expressed expressed in Mt, organized by economic sector of C02 expressed expressed in Mt CO2/yr. In this report fossil CO2 emissions include sources from fossil fuel use (combustion, flaring), industrial processes (cement, steel, chemicals and urea) and product use.
+
 
 ```{r}
 #### Cleaning of the data sets
@@ -471,17 +475,18 @@ To have an overview of the countries and their level of pollution, we will make 
 # Third countries with the highest CO2 emissions ?
 top_countries <- growth_energy_2019[order(-growth_energy_2019$co2.emissions), ][1:3, ]
 
-# Creation of the graph with the points of the most polluters
+# Creation of the graph with the points of the biggest polluters
 ggplot(data = growth_energy_2019, aes(x = country, y = co2.emissions)) +
-  geom_blank() +  # Suppression of the points to mask the name of the other countries on the x axis
+  geom_blank() +  
   geom_text(data = top_countries, aes(label = country), size = 3, angle = 45, vjust = -0.5, hjust = 1) +  # Display of the names of the greatest polluters
-  geom_point(data = top_countries, size = 3) +  # Points for the three greatest polluters
+  geom_point(data = top_countries, size = 3, col= "red") +  # Points for the three greatest polluters
   labs(x = NULL, y = "CO2 emissions in 2019") +  # Suppression of the x axis label 
-  ggtitle("Dispersions of CO2 emissions by country in 2019")
+  ggtitle("Dispersions of CO2 emissions by country in 2019")+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ```
 
-We can spot that CO2 emissions are very unequally distributed. China, India and the US are by far more polluting.
+We can spot that CO2 emissions are very unequally distributed. China, India and the US are by far more polluting than the rest of sample. China emmited 10,773,248,000 Mt, the US 5,144,361,000, followed by India with 2,314,738,000 Mt of CO2. 
 
 ### b. Top 5 world economies : relation between wealth and CO2 emissions
 
@@ -540,7 +545,7 @@ ggplot(growth_CO2_50_first, aes(x = GDP, y = CO2_by_country)) +
   theme_minimal()
 ```
 
-By plotting the CO2 emissions of the top 5 world economies, we spot that the relation between the two variables is clearly positive in China. Moreover, even if for the US, the reverse U relationship seems to be reflected, we observe mostly a negative relation. In the United Kingdom and in Germany, we observe a negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship.
+By plotting the CO2 emissions of the top 5 world economies, we spot that the relation between the two variables is clearly positive in China. In the United Kingdom and in Germany, we observe a negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship. In the US, the reverse U relationship is perfectly observable.
 
 ### c. Analysis of the relation CO2 emission / GDP per country over time by local regions
 
@@ -565,7 +570,7 @@ ggplot(growth_CO2_western_european_countries, aes(x = GDP, y = CO2_by_country, c
 
 By plotting the Western European countries only, we can clearly spot reverse U relationship for Belgium and the Netherlands however, the data of Sweden, Luxembourg are following the former intuition we had about Germany and the United Kingdom we a purely negative relationship (second part of the reverse U).
 
-To confirm the intuition, let's plot the Eastern Europe countries data considering that they developped later than Eastern ones.
+To confirm the intuition, let's plot the Eastern Europe countries data considering that they developed later than Eastern ones.
 
 ```{r}
 eastern_european_countries1 <- c("Estonia", "Hungary", "Kosovo", "Latvia", "Lithuania","Moldova", "Montenegro", "North Macedonia", "Poland", "Romani
@@ -599,7 +604,7 @@ grid.arrange(plot1, plot2, nrow = 2)
 
 ```
 
-Indeed, the expected reverse U relationship is clearer for Eastern European countries than for the Western ones even if we are still able to spot a negative relationship between the variables for the most developed of them such as Poland.
+Indeed, the expected reverse U relationship is clearer for Eastern European countries than for the Western ones even if we are still able to spot a negative relationship between the variables for the weathier of them such as Poland (21st world economy).
 
 #### Subsaharan African Countries
 
@@ -655,13 +660,15 @@ plot4<-ggplot(growth_CO2_SA_countries4, aes(x = GDP, y = CO2_by_country, color =
         axis.text.y = element_blank(),
         axis.ticks = element_blank())
 
-grid.arrange(plot1, plot2, nrow = 2)
-grid.arrange(plot3, plot4, nrow = 2)
+plot1
+plot2
+plot3
+plot4
 ```
 
 When we pay attention to the Sub-Saharan African countries that are still developing the relation relation between CO2 emissions and GDP seems to be positive considering that these country are still on the first part of reverse U relationship between these two variables.
 
-South Africa appears as an out-liner since it an emerging economy.
+South Africa appears as an out-liner since it an emerging economy in opposition with developing ones. 
 
 #### Emerging economies
 
@@ -689,7 +696,7 @@ When plotting the data concerning the BRICS, we see that the relationship is eff
 
 ## 2. Econometric analysis
 
-To confirm the existence of a U shape relation between the CO2 emissions and the wealth we will use the OLS method on our data. In order to do so we will made this analysis on 4 distinct panels of country classed by their degrees of development.
+To confirm the existence of a reverse U shape relation between CO2 emissions and wealth we will use the OLS method on our data. In order to do so we will made this analysis on 4 distinct panels of country classed by their degrees of development.
 
 ### a. Creation of dataframes depending of the countries level of development
 
@@ -854,7 +861,8 @@ For each model, both variables are significant (their p-value is \<1%). The coef
 
 ### d. Khi-2 test
 
-$$ H_0 : \text{CO2 and GDP are independent} $$ $$ H_1 : \text{CO2 and GDP are dependent} $$
+$$ H_0 : \text{CO2 and GDP are independent} $$ 
+$$ H_1 : \text{CO2 and GDP are dependent} $$
 
 #### Low income countries
 
@@ -956,7 +964,20 @@ print(resume_ols_all_countries$coefficients)
 
 We spot that without paying attention the development stage of the country the the gross capital and the urban population have a significant impact on the CO2 emissions. Gross capital tends to impact positively CO2 emissions meanwhile the raise of the urban population tends to lower CO2 emissions.
 
-Indeed, gross capital is linked to a raise of the industrial production wich is of course a polluting activity. On the other hand, the raise of the urban population is linked to efficient infrastructures, highest density of living (less vehiculed commutes), promotion of sustainable practices and energy efficiency.
+Indeed, gross capital is linked to a raise of the industrial production witch is of course a polluting activity. On the other hand, the raise of the urban population is linked to efficient infrastructures, highest density of living (less vehiculed commutes), promotion of sustainable practices and energy efficiency.
+
+### f. Are the developed countries cheating ?
+
+
+
+```{r}
+high_income_countries|> ggplot( aes(x= 1990:length(gross_capital),y=gross_capital))+
+  geom_point()
+```
+
+# D - Conclusion 
+
+As a conclusion, Panayotou's environmental Kuznets's curves theory intuition seems to be verified on the sample. By plotting the CO2 emissions conditioned on the GDP of the top 5 world economies, we gained insight into the different realities hiding behind this concept. The most developed countries appear to be on the second part of the reverse U-shaped curve, with a negative impact of GDP on CO2 emissions. However, the impact of GDP on CO2 emissions is positive for the emerging (BRICS) and developing economies (Sub-Saharan African countries). We then split the sample into four groups based on their level of development, represented by GDP per capita. The econometrical analysis revealed a correlation between CO2 and GDP, which we verified using regressions. For each of our four groups, the coefficient of GDP and GDP squared was significant. As expected, the coefficient of GDP was positive, indicating that GDP has a positive impact on CO2 emissions. Nevertheless, the coefficient of GDP squared was negative, suggesting that beyond a certain point, the increase in GDP starts having a negative impact on CO2 emissions. In other words, infinite growth would be incompatible with the environmental emergency. 
 
 # E - Annex
 
