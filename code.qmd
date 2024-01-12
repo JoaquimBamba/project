@@ -143,6 +143,9 @@ gross_capital <- gross_capital %>%
 # We put NA instead of blanks
 gross_capital <- gross_capital %>% mutate_all(~na_if(., ""))
 
+# We specify that the data are numeric
+gross_capital$gross_capital<-as.numeric(gross_capital$gross_capital)
+
 # Then we re-iterate the process for each variable.
 ```
 
@@ -161,6 +164,9 @@ gdp_growth <- gdp_growth %>%
   rename(country = Country.Name)
 
 gdp_growth[gdp_growth == ''] <- NA
+
+gdp_growth$gdp_growth<-as.numeric(gdp_growth$gdp_growth)
+
 ```
 
 #### cleaning of GDP
@@ -178,6 +184,9 @@ GDP <- GDP %>%
   rename(country = Country.Name)
 
 GDP <- GDP %>% mutate_all(~na_if(., ""))
+
+GDP$GDP<-as.numeric(GDP$GDP)
+
 ```
 
 #### cleaning og gdp_per_capita
@@ -195,6 +204,9 @@ gdp_per_capita <- gdp_per_capita %>%
   rename(country = Country.Name)
 
 gdp_per_capita <- gdp_per_capita %>% mutate_all(~na_if(., ""))
+
+gdp_per_capita$gdp_per_capita<-as.numeric(gdp_per_capita$gdp_per_capita)
+
 ```
 
 
@@ -234,6 +246,9 @@ population_growth <- population_growth %>%
   rename(country = Country.Name)
 
 population_growth[population_growth == ''] <- NA
+
+population_growth$population_growth<-as.numeric(population_growth$population_growth)
+
 ```
 
 #### cleaning of urban_population
@@ -251,6 +266,8 @@ urban_population <- urban_population %>%
   rename(country = Country.Name)
 
 urban_population <- urban_population %>% mutate_all(~na_if(., ""))
+
+urban_population$urban_population<-as.numeric(urban_population$urban_population)
 ```
 
 ### Basic information on the data files
@@ -371,7 +388,7 @@ We need to create a data base with all the economic growth relative variables.
 # In order to do so we join each of the data base two by two
 gdp_gdp_growth <- inner_join(GDP, gdp_growth, by=c("country","year"))
 
-all_gdp <- inner_join(gdp_gdp_growth, gdp_per_capita, by=c("country","year"))
+all_gdp <- left_join(gdp_gdp_growth, gdp_per_capita, by=c("year","country"))
 
 all_gdp_gross_capital <- inner_join(all_gdp, gross_capital, by=c("country","year"))
 
@@ -507,6 +524,12 @@ fossil_CO2_totals_by_country <- fossil_CO2_totals_by_country %>% pivot_longer(co
 
 fossil_CO2_totals_by_country <- fossil_CO2_totals_by_country %>%
   rename(country = Country)
+
+# We have to put points instead of commas
+fossil_CO2_totals_by_country$CO2_by_country <- gsub(",", ".", fossil_CO2_totals_by_country$CO2_by_country, fixed = TRUE)
+
+fossil_CO2_totals_by_country$CO2_by_country<-as.numeric(fossil_CO2_totals_by_country$CO2_by_country)
+
 ```
 
 #### CO2 by GDP by country
@@ -524,6 +547,11 @@ fossil_CO2_per_GDP_by_country <- fossil_CO2_per_GDP_by_country %>% pivot_longer(
 
 fossil_CO2_per_GDP_by_country <- fossil_CO2_per_GDP_by_country %>%
   rename(country = Country)
+
+fossil_CO2_per_GDP_by_country$CO2_per_GDP_by_country <- gsub(",", ".", fossil_CO2_per_GDP_by_country$CO2_per_GDP_by_country, fixed = TRUE)
+
+fossil_CO2_per_GDP_by_country$CO2_per_GDP_by_country<-as.numeric(fossil_CO2_per_GDP_by_country$CO2_per_GDP_by_country)
+
 ```
 
 #### CO2 by sector by country 
@@ -540,6 +568,9 @@ fossil_CO2_by_sector_and_country <- fossil_CO2_by_sector_and_country %>% pivot_l
 fossil_CO2_by_sector_and_country <- fossil_CO2_by_sector_and_country %>%
   rename(country = Country)
 
+fossil_CO2_by_sector_and_country$CO2_by_sector_country <- gsub(",", ".", fossil_CO2_by_sector_and_country$CO2_by_sector_country, fixed = TRUE)
+
+fossil_CO2_by_sector_and_country$CO2_by_sector_country<-as.numeric(fossil_CO2_by_sector_and_country$CO2_by_sector_country)
 ```
 
 #### Data joining
@@ -648,7 +679,7 @@ growth_CO2_50_first<-growth_CO2[2433:2464,]
 
 ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
   geom_point(na.rm=T)+
-  labs(title = "Croissance du CO2 par rapport au PIB (Japan 1970-2021)") +
+  labs(title = "Croissance du CO2 par rapport au PIB (China 1970-2021)") +
   theme_minimal()+
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
@@ -687,14 +718,14 @@ growth_CO2_50_first<-subset(growth_CO2, country == "United Kingdom")
 
 ggplot(growth_CO2_50_first, aes(x =GDP, y =CO2_by_country )) +
   geom_point(na.rm=T)+
-  labs(title = "Croissance du CO2 par rapport au PIB (Germany 1970-2021)") +
+  labs(title = "Croissance du CO2 par rapport au PIB (United Kingdom 1970-2021)") +
   theme_minimal()
 
   
 ```
 
 
-By plotting the CO2 emissions of top 5 world economies, we spot that the relation is clearly verified in China. In the United Kingdom and in Germany, we observe negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developped economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship. 
+By plotting the CO2 emissions of top 5 world economies, we spot that the relation is clearly verified in China. In the United Kingdom and in Germany, we observe negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship. 
 
 ### Western and Eastern European countries
 
@@ -714,7 +745,7 @@ ggplot(growth_CO2_western_european_countries, aes(x = GDP, y = CO2_by_country, c
         axis.ticks = element_blank())
 
 ```
-By plotting the Western European coutries only, we can clearly spot reverse U relationship for Belgium and the Netherlands however, the data of Sweden, Luxembourg are following the former intuition we had about Germany and the United Kingdom we a purely negative relationship (second part of the reverse U).
+By plotting the Western European countries only, we can clearly spot reverse U relationship for Belgium and the Netherlands however, the data of Sweden, Luxembourg are following the former intuition we had about Germany and the United Kingdom we a purely negative relationship (second part of the reverse U).
 
 To confirm the intuition, let's plot the Eastern Europe countries data considering that they developped later than Eastern ones
 
@@ -753,7 +784,7 @@ plot2<-ggplot(growth_CO2_eastern_european_countries2, aes(x = GDP, y = CO2_by_co
 grid.arrange(plot1, plot2, nrow = 2)
 
 ```
-Indeed, the expected reverse U relationship is clearer for Easter European coutries than for the Western ones.
+Indeed, the expected reverse U relationship is clearer for Easter European countries than for the Western ones.
 
 ### Subsaharan African Countries
 
@@ -817,7 +848,7 @@ grid.arrange(plot1, plot2, nrow = 2)
 grid.arrange(plot3, plot4, nrow = 2)
 ```
 
-When we pay attention to the Subsaaran Afrincan coutries that are still developping the relation relation between CO2 emissions and GDP seems to be positive considering that these country are still on the first part of reverse U relationship between these two variables.
+When we pay attention to the Subsaharan African coutries that are still developping the relation relation between CO2 emissions and GDP seems to be positive considering that these country are still on the first part of reverse U relationship between these two variables.
 
 ## Statistical tests : 
 
@@ -842,14 +873,93 @@ SA_GDP<-growth_CO2_SA_countries|>pull(GDP)
 
 
 ```
+## Economitric analysis
 
+To confirm the existence of a U shape relation between the CO2 emissions and the wealth we will use the OLS method on our data. In order to do so we will made this analysis on ? distinct panels of country classed by their degrees of development.
+
+### Creation of dataframes depending of the countries level of development
+
+We will class the countries into 4 categories according to the mean of their gdp per capita over the period studied. We will divide the countries according to the quantiles of the distribution of their mean gdp per capita.
 ```{r}
+gdp_per_capita_mean <- growth_CO2 |> group_by(country) |> summarise(mean(gdp_per_capita, na.rm = T))
 
-for (i in 1:length(growth_CO2_SA_countries)){
-  for (j in 1:length(growth_CO2_SA_countries)){
-    growth_CO2_SA_countries[i,j]<-round(growth_CO2_SA_countries[i,j], digits=4)
-  }
-}
+#is.na(gdp_per_capita_mean)
 
+summary(gdp_per_capita_mean)
+```
+```{r}
+low_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)<1236)
+
+lower_middle_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)>= 1236 & mean(gdp_per_capita, na.rm = T)<3772)
+
+upper_middle_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)>= 3772& mean(gdp_per_capita, na.rm = T)<12936)
+
+high_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)>=1236)
 ```
 
+```{r}
+# Traitement des valeurs manquantes
+## Afin de pouvoir au mieux calculer nos régressions, nous retirons les pays contenant des valeurs manquantes
+
+### Low income countries
+low_income_countries |> summarise(anyNA(CO2_by_country))
+low_income_countries |> summarise(anyNA(GDP))
+
+low_income_countries <- low_income_countries %>%
+  group_by(country) %>%
+  filter(all(!is.na(GDP)))
+
+### Lower middle income countries
+lower_middle_income_countries |> summarise(anyNA(CO2_by_country))
+lower_middle_income_countries |> summarise(anyNA(GDP))
+
+lower_middle_income_countries <- lower_middle_income_countries %>%
+  group_by(country) %>%
+  filter(all(!is.na(GDP)))
+
+### Upper middle income countries
+upper_middle_income_countries |> summarise(anyNA(CO2_by_country))
+upper_middle_income_countries |> summarise(anyNA(GDP))
+
+upper_middle_income_countries <- upper_middle_income_countries %>%
+  group_by(country) %>%
+  filter(all(!is.na(GDP)))
+
+### High income countries
+high_income_countries |> summarise(anyNA(CO2_by_country))
+high_income_countries |> summarise(anyNA(GDP))
+
+high_income_countries <- high_income_countries %>%
+  group_by(country) %>%
+  filter(all(!is.na(GDP)))
+```
+For the regression we need the squarred gdp, thus we add it to our dataframes.
+```{r}
+low_income_countries$GDP_carre <- (low_income_countries$GDP)^2
+lower_middle_income_countries$GDP_carre <- (lower_middle_income_countries$GDP)^2
+upper_middle_income_countries$GDP_carre <- (upper_middle_income_countries$GDP)^2
+high_income_countries$GDP_carre <- (high_income_countries$GDP)^2
+```
+
+### OLS regressions
+
+#### Low income countries
+
+```{r}
+lm( CO2_by_country ~ GDP + GDP_carre, data = low_income_countries)
+```
+#### Lower middle income countries
+
+```{r}
+lm( CO2_by_country ~ GDP + GDP_carre, data = lower_middle_income_countries)
+```
+#### Upper middle income countries
+
+```{r}
+lm( CO2_by_country ~ GDP + GDP_carre, data = upper_middle_income_countries)
+```
+#### High income countries
+
+```{r}
+lm( CO2_by_country ~ GDP + GDP_carre, data = high_income_countries)
+```
