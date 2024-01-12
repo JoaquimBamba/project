@@ -970,7 +970,10 @@ high_income_countries$GDP_carre <- (high_income_countries$GDP)^2
 #### Low income countries
 
 ```{r}
-lm( CO2_by_country ~ GDP + GDP_carre, data = low_income_countries)
+
+ols_low_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre, data = low_income_countries)
+resume_ols_low_income_countries <- summary(ols_low_income_countries)
+print(resume_ols_low_income_countries$coefficients)
 ```
 #### Lower middle income countries
 
@@ -1029,5 +1032,28 @@ ggplot(upper_middle_income_countries, aes(x = CO2_by_country, y = GDP)) +
        y = "GDP") +
   theme_minimal()
 ```
+
+```{r}
+library(corrplot)
+
+# Générer des données exemple (remplacez cela par vos propres données)
+set.seed(123)
+data <- data.frame(
+  Var1 = rnorm(100),
+  Var2 = rnorm(100),
+  Var3 = rnorm(100),
+  Var4 = rnorm(100)
+)
+
+# Calculer la matrice de corrélation
+cor_matrix <- cor(data)
+
+# Afficher la matrice de corrélation
+print(cor_matrix)
+
+# Tracer le graphique corrplot
+corrplot(cor_matrix, method = "circle", tl.col = "black", tl.srt = 45)
+```
+
 
 Calculation of the coefficient of correlation
