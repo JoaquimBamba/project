@@ -848,7 +848,7 @@ When we pay attention to the Subsaharan African coutries that are still developp
 
 South Africa appears as an outliner since it an emerging economy. 
 
-#### Emerging economies 
+### Emerging economies 
 
 During the COP assemblies, the BRICS are often pointed out as major polluters by developped coutries.
 
@@ -874,32 +874,10 @@ ggplot(growth_CO2_emerging_countries, aes(x = GDP, y = CO2_by_country, color = c
 ```
 When plotting the data conserning the BRICS, we see that the relationship is effectively positive over time.
 
-## Statistical tests : 
 
-```{r}
-options(digits=5)
-SA_countries <-c("Angola", "Benin", "Botswana", "Burkina Faso", "Burundi", "Cabo Verde", "Cameroon", "Central African Republic", "Chad", "Comoros", "Democratic Republic of the Congo", "Djibouti", "Equatorial Guinea", "Eritrea", "Eswatini", "Ethiopia", "Gabon", "The Gambia", "Ghana", "Guinea", "Guinea-Bissau", "Ivory Coast", "Kenya", "Lesotho", "Liberia", "Madagascar", "Malawi", "Mali", "Mauritania", "Mauritius", "Mozambique", "Namibia", "Niger", "Nigeria", "Republic of the Congo", "Rwanda", "Sao Tome and Principe", "Senegal", "Seychelles", "Sierra Leone", "Somalia", "South Africa", "South Sudan", "Sudan", "Tanzania", "Togo", "Uganda", "Zambia", "Zimbabwe"
-)
-growth_CO2_SA_countries <- subset(growth_CO2, country %in% SA_countries)|>select(CO2_by_country, GDP)
-
-#delete the lines with NA
-growth_CO2_SA_countries <- growth_CO2_SA_countries[complete.cases(growth_CO2_SA_countries), ]
-
-# Convertir les valeurs de la colonne 'CO2_by_country' en numériques
-growth_CO2_SA_countries$CO2_by_country <- as.numeric(as.character(growth_CO2_SA_countries$CO2_by_country))
-
-# Convertir les valeurs de la colonne 'GDP' en numériques
-growth_CO2_SA_countries$GDP <- as.numeric(as.character(growth_CO2_SA_countries$GDP))
-
-
-SA_CO2<-growth_CO2_SA_countries|>pull(CO2_by_country)
-SA_GDP<-growth_CO2_SA_countries|>pull(GDP)
-
-
-```
 ## Econometric analysis
 
-To confirm the existence of a U shape relation between the CO2 emissions and the wealth we will use the OLS method on our data. In order to do so we will made this analysis on ? distinct panels of country classed by their degrees of development.
+To confirm the existence of a U shape relation between the CO2 emissions and the wealth we will use the OLS method on our data. In order to do so we will made this analysis on 4 distinct panels of country classed by their degrees of development.
 
 ### Creation of dataframes depending of the countries level of development
 
@@ -967,29 +945,48 @@ high_income_countries$GDP_carre <- (high_income_countries$GDP)^2
 
 ### OLS regressions
 
+We will conduct 4 OLS regressions on hte following model :
+
+
+\[ CO2_i = \beta_0 + \beta_1 GDP_i + \beta_2 GDP^2_i+\varepsilon_i \]
+
+We regress the CO2 on the GDP and the GDP squared for each country of the group for each year. Having a reverse U relationship means that the coefficient of the GDP and the GDP squared have to be respectivevely positive and negative.
+
 #### Low income countries
 
 ```{r}
-
+# we compute the regression
 ols_low_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre, data = low_income_countries)
+# we display the results with the p-values
 resume_ols_low_income_countries <- summary(ols_low_income_countries)
 print(resume_ols_low_income_countries$coefficients)
 ```
+
 #### Lower middle income countries
 
 ```{r}
-lm( CO2_by_country ~ GDP + GDP_carre, data = lower_middle_income_countries)
+ols_lower_middle_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre, data = lower_middle_income_countries)
+resume_ols_lower_middle_income_countries <- summary(ols_lower_middle_income_countries)
+print(resume_ols_lower_middle_income_countries$coefficients)
 ```
 #### Upper middle income countries
 
 ```{r}
-lm( CO2_by_country ~ GDP + GDP_carre, data = upper_middle_income_countries)
+ols_upper_middle_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre, data = upper_middle_income_countries)
+resume_ols_upper_middle_income_countries <- summary(ols_upper_middle_income_countries)
+print(resume_ols_upper_middle_income_countries$coefficients)
 ```
 #### High income countries
 
 ```{r}
-lm( CO2_by_country ~ GDP + GDP_carre, data = high_income_countries)
+ols_high_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre, data = high_income_countries)
+resume_ols_high_income_countries <- summary(ols_high_income_countries)
+print(resume_ols_high_income_countries$coefficients)
 ```
+For each model, both variables are significant (their p-value is <1%).
+The coefficient of the GDP is positive and the one of the GDP squared is negative.
+Thus we can validate the existence of an EKC for each group of countries with a turning point highlighted by the significance of the GDP_carre's coefficient.
+
 
 ### Correlation
 Lets look for a correlation between the CO2 emissions of a country and its wealth. In order to do so, we represente the correlation with a graph.
@@ -1056,4 +1053,11 @@ corrplot(cor_matrix, method = "circle", tl.col = "black", tl.srt = 45)
 ```
 
 
-Calculation of the coefficient of correlation
+### Khi-2 test
+
+```{r}
+
+
+
+```
+
