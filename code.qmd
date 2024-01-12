@@ -959,7 +959,6 @@ high_income_countries$GDP_carre <- (high_income_countries$GDP)^2
 
 We will conduct 4 OLS regressions on hte following model :
 
-\[ CO2_i = \beta\_0 + \beta\_1 GDP_i + \beta\_2 GDP\^2_i+\varepsilon\_i \]
 
 $$ CO2_i = \beta\_0 + \beta\_1 GDP_i + \beta\_2 GDP^2_i+\varepsilon\_i$$
 
@@ -1045,27 +1044,6 @@ ggplot(upper_middle_income_countries, aes(x = CO2_by_country, y = GDP)) +
   theme_minimal()
 ```
 
-```{r}
-library(corrplot)
-
-# Générer des données exemple (remplacez cela par vos propres données)
-set.seed(123)
-data <- data.frame(
-  Var1 = rnorm(100),
-  Var2 = rnorm(100),
-  Var3 = rnorm(100),
-  Var4 = rnorm(100)
-)
-
-# Calculer la matrice de corrélation
-cor_matrix <- cor(data)
-
-# Afficher la matrice de corrélation
-print(cor_matrix)
-
-# Tracer le graphique corrplot
-corrplot(cor_matrix, method = "circle", tl.col = "black", tl.srt = 45)
-```
 
 ### Khi-2 test
 
@@ -1096,5 +1074,69 @@ upper_middle_income_chi2 <- chisq.test(upper_middle_income_countries[, c("CO2_by
 print(upper_middle_income_chi2)
 ```
 
-For each group, we can reject $$H_0$$ thanks to the p-value and conclude that CO2 emmissions and GDP are effectively dependant whatever the country's development stage.
+For each group, we can reject H_0 thanks to the p-value and conclude that CO2 emmissions and GDP are effectively dependant whatever the country's development stage.
+
+### Improving the model
+
+Now, let's take into account additional variables also linked to development : the gross capital allowing higher production capacity, the growth of the population and the share of the urban population in order to find out if they also participate to the increase of CO2 emmissions.
+
+$$ CO2_i = \beta\_0 + \beta\_1 GDP_i + \beta\_2 GDP^2_i+\beta\_3 gPOP_i+\beta\_4 POPurban_i+\varepsilon\_i$$
+#### Low income countries
+
+```{r}
+# we compute the regression
+ols_low_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre +gross_capital+ population_growth+urban_population, data = low_income_countries)
+# we display the results with the p-values
+resume_ols_low_income_countries <- summary(ols_low_income_countries)
+print(resume_ols_low_income_countries$coefficients)
+```
+
+#### Lower middle income countries
+
+```{r}
+ols_lower_middle_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre +gross_capital+ population_growth+urban_population, data = lower_middle_income_countries)
+resume_ols_lower_middle_income_countries <- summary(ols_lower_middle_income_countries)
+print(resume_ols_lower_middle_income_countries$coefficients)
+```
+
+#### Upper middle income countries
+
+```{r}
+ols_upper_middle_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre +gross_capital+ population_growth+urban_population, data = upper_middle_income_countries)
+resume_ols_upper_middle_income_countries <- summary(ols_upper_middle_income_countries)
+print(resume_ols_upper_middle_income_countries$coefficients)
+```
+
+#### High income countries
+
+```{r}
+ols_high_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre +gross_capital+ population_growth+urban_population, data = high_income_countries)
+resume_ols_high_income_countries <- summary(ols_high_income_countries)
+print(resume_ols_high_income_countries$coefficients)
+```
+
+```{r}
+
+ols_upper_middle_income_countries <- lm( CO2_by_country ~ GDP + GDP_carre +gross_capital+ population_growth+urban_population, data = upper_middle_income_countries)
+resume_ols_upper_middle_income_countries <- summary(ols_upper_middle_income_countries)
+print(resume_ols_upper_middle_income_countries$coefficients)
+```
+
+#### For all coutries of the sample
+
+```{r}
+
+growth_CO2_2 <- growth_CO2 %>%
+  group_by(country) %>%
+  filter(all(!is.na(GDP)))
+
+ols_growth_CO2_2 <- lm( CO2_by_country ~ GDP + GDP_carre +gross_capital+ population_growth+urban_population, data = high_income_countries)
+resume__countries <- summary(ols_high_income_countries)
+print(resume_ols_high_income_countries$coefficients)
+```
+We spot that without paying attention the development stage of the country the the gross capital and the urban population have a significant impact on the CO2 emissions. Gross capital tends to impact positively CO2 emissions meanwhile the raise of the urban population tends to lower CO2 emissions.
+
+Indeed, gross capital is linked to a raise of the industrial production wich is of course a polluting activity. On the other hand, the raise of the urban population is linked to efficient infrastructures, highest density of living (less vehiculed commutes), promotion of sustainable practices and energy efficiency.
+
+
 
