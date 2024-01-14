@@ -1,7 +1,7 @@
 ---
 title: "quarto"
 author: "Amandine & Joaquim"
-format: html
+format: pdf
 echo: false
 message: false
 editor: visual
@@ -483,12 +483,10 @@ ggplot(data = growth_energy_2019, aes(x = country, y = co2.emissions)) +
   labs(x = NULL, y = "CO2 emissions in 2019") +  # Suppression of the x axis label 
   ggtitle("Dispersions of CO2 emissions by country in 2019")+ 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
 ```
-
 We can spot that CO2 emissions are very unequally distributed. China, India and the US are by far more polluting than the rest of sample. China emitted 10,773,248,000 Mt, the US 5,144,361,000, followed by India with 2,314,738,000 Mt of CO2.
 
-### b. Top 5 world economies : relation between wealth and CO2 emissions
+### c. Top 5 world economies : relation between wealth and CO2 emissions
 
 Now let’s plot the CO2 emissions per country depending on their GDP over time. We will study this relation for the top 5 world economies. We will now and for the rest of the analysis use our growth_CO2 base.
 ```{r}
@@ -551,7 +549,7 @@ ggplot(growth_CO2_50_first, aes(x = GDP, y = CO2_by_country)) +
 
 By plotting the CO2 emissions of the top 5 world economies, we spot that the relation between the two variables is clearly positive in China, suggesting the increase part of the reverse U relationship between the gdp and the CO2. In the United Kingdom and in Germany, we observe a negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship. In the US, the reverse U relationship is perfectly observable. The effect for Japan is more contrasted as it seems to show a positive relationship but nothing too relevant.
 
-### c. Analysis of the relation CO2 emission / GDP per country over time by local regions
+### d. Analysis of the relation CO2 emission / GDP per country over time by local regions
 
 #### Western and Eastern European countries
 
@@ -711,13 +709,13 @@ summary(gdp_per_capita_mean)
 ```
 
 ```{r}
-low_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)<1236)
+low_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)<1235.8)
 
-lower_middle_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)>= 1236 & mean(gdp_per_capita, na.rm = T)<3772)
+lower_middle_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)>= 1235.8 & mean(gdp_per_capita, na.rm = T)<3771.6)
 
-upper_middle_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)>= 3772& mean(gdp_per_capita, na.rm = T)<12936)
+upper_middle_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)>= 3771.6& mean(gdp_per_capita, na.rm = T)<12935.7)
 
-high_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)>=1236)
+high_income_countries <- growth_CO2 |> group_by(country) |> filter(mean(gdp_per_capita, na.rm = T)>=12935.7)
 ```
 
 ```{r}
@@ -965,18 +963,65 @@ We spot that without paying attention the development stage of the country the t
 
 Indeed, gross capital is linked to a raise of the industrial production witch is of course a polluting activity. On the other hand, the raise of the urban population is linked to efficient infrastructures, highest density of living (less vehicles commutes), promotion of sustainable practices and energy efficiency.
 
-### f. Are the developed countries cheating ?
+### f. Complementary analysis
 
+In this last part we will focus on the energy, which is a great indicator for the CO2 emission.
+First, we will study which countries used the most energy in 2019 (with our growth_energy_2019 dataset).
 ```{r}
-#high_income_countries|> ggplot( aes(x= 1990:length(gross_capital),y=gross_capital))+
-#  geom_point()
+ggplot(growth_energy_2019, aes(x = gdp_per_capita, y = energy.consumption)) +
+  geom_point(aes(color = ifelse(country %in% c("China", "India", "United States"), "red", "black")), size = 3) +
+  geom_text(aes(label = country), vjust = -0.5, hjust = 0.5, size = 3, color = ifelse(growth_energy_2019$country %in% c("China", "India", "United States"), "red", "black")) +
+  geom_text(
+    data = subset(growth_energy_2019, country %in% c("China", "India", "United States")),
+    aes(label = country), vjust = -0.5, hjust = 0.5, size = 3, color = "red"
+  ) +
+  labs(
+    title = "Relationship between the GDP per capita and the energy consumption per capita in 2019",
+    x = "GDP per capita",
+    y = "Energy consumption per capita"
+  ) +
+  scale_color_identity()
 ```
+We observe that higher GDP per capita countries tends to have a higher energy consumption, it is especially true for Middle East countries that are oil producers countries. The link between energy consumption per capita and pollution often translates to increased emissions from energy sources like fossil fuels, contributing significantly to air and greenhouse gas pollution. Moreover, the countries with the higher energy consumption per capita are not the same as the one who produce the most CO2 that we saw previously.
+
+We will now focus on the relationship between the CO2 emissions of countries and their renewable energy consumption. Our idea is that the more a country will use renewable energies the less it will pollute.
+To have a better lecture of the graph, we worked on 17 countries only from all stage of development.
+```{r}
+#| warning: false
+
+selected_countries <- c("China", "United States", "India", "South Africa", "Japan", "Germany", "Brazil","United Kingdom","Nigeria","Benin","Rwanda","Indonesia","Nicaragua","Argentina","Bulgaria","Poland","Qatar")
+
+growth_CO2_filtered <- growth_CO2 %>% filter(country %in% selected_countries)
+
+ggplot(growth_CO2_filtered, aes(y = CO2_by_country, x = renewable_energy_consumption, color = country)) +
+  geom_point(size = 1.5) +
+  labs(title = "Renewable energy consumption by CO2 emissions of countries",
+       y = "CO2 emissions",
+       x = "Renewable energy consumption") + theme(legend.position = "right", legend.title = element_blank()) + labs(color = "Countries")
+```
+We observe on the graph that with a high use of renewable energy, countries pollute less. However, for the most polluter countries such as the United States, China and India we do not see a high use of renewable energy.
+
+We will now focus on the link between the level of GDP and the consumption of renewable energy for the same panel of countries.
+```{r}
+#| warning: false
+
+ggplot(growth_CO2_filtered, aes(x = GDP, y = renewable_energy_consumption, color = country)) +
+  geom_point(size = 1.5) +
+  labs(title = "Renewable energy consumption by GDP of countries",
+       x = "GDP",
+       y = "Renewable energy consumption") + theme(legend.position = "right", legend.title = element_blank()) + labs(color = "Countries")
+```
+Despite having a higher GDP, countries does not necessarily act to reduce their CO2 emissions by using more renewable energies. Indeed, the USA, China or Japan have a high level of GDP but their consumption of renewable energy is quite low, whereas Nigeria or Benin with a low GDP are using a strong amount of renewable energy. With this analysis we can see that the wealthiest countries are not the one that do the most effort to use greener energies and lowering their CO2 emissions.
 
 # D - Conclusion
 
 As a conclusion, Panayotou's environmental Kuznets's curves theory intuition seems to be verified on the sample. By plotting the CO2 emissions conditioned on the GDP of the top 5 world economies, we gained insight into the different realities hiding behind this concept. The most developed countries appear to be on the second part of the reverse U-shaped curve, with a negative impact of GDP on CO2 emissions. However, the impact of GDP on CO2 emissions is positive for the emerging (BRICS) and developing economies (Sub-Saharan African countries). We then split the sample into four groups based on their level of development, represented by GDP per capita. 
 The econometric analysis revealed a correlation between CO2 and GDP, which we verified using OLS regressions. For each of our four groups, the coefficient of GDP and GDP squared was significant. As expected, the coefficient of GDP was positive, indicating that GDP has a positive impact on CO2 emissions. Nevertheless, the coefficient of GDP squared was negative, suggesting that beyond a certain point, the increase in GDP starts having a negative impact on CO2 emissions. In other words, infinite growth would be incompatible with the environmental emergency. We found the same results when augmenting our model and sax that a higher gross capital formation goes with higher CO2 emissions and a higher urban population decrease CO2 emissions. This results are quite interesting ; higher level of capital comes with a higher level of development thus we could have expected that it reflected a lowering of the pollution but the impact of the industries on the environment induced by the capital is higher.Moreover, a higher urban population could have mean a higher pollution due to the increase of the population, but it shows here that the urban population is indeed an indicator of development.
 Then, our khi-two test showed that the gdp and the CO2 emissions are dependent of each other, so it means that those variables have effectively an effect on each other.
+Furthermore, we pushed our analysis and saw that even if a higher consumption of renewable energy decrease the CO2 emissions, countries with higher GDP does not necessarily consume more of it and so do not necessarily act to decrease their pollution.
+
+Overall, our analysis is consistent with the EKC theory that countries will first develop with increased pollution because they develop with the industrial sector, and then, in the second phase of their development, reduce their CO2 emissions because they will have the wealth to use greener technologies that are more expensive.
+One could counter this interpretation with the concept of a "pollution haven," suggesting that developed countries might not reduce pollution but instead relocate their polluting activities to emerging and developing nations, causing their emissions to increase accordingly.
 
 # E - Annex
 
