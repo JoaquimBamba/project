@@ -28,7 +28,7 @@ here::i_am("project.Rproj")
 
 # Data management project :
 
-Joaquim Bamba & Amandine Godefroy
+Study of the links between countries pollution and their level of development.
 
 # A - Presentation of the research question
 
@@ -783,40 +783,37 @@ ggplot(low_income_countries, aes(x = GDP, y =CO2_by_country)) +
        y = "CO2 level of emission") +
   theme_minimal()
 ```
-
 ```{r}
 #| message: false
-ggplot(high_income_countries, aes(x = CO2_by_country, y = GDP)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") +
-  labs(title = "Correlation between the CO2 emission and the wealth of high income countries ",
-       x = "CO2 level of emission",
-       y = "GDP") +
-  theme_minimal()
-```
-
-```{r}
-#| message: false
-ggplot(lower_middle_income_countries, aes(x = CO2_by_country, y = GDP)) +
+ggplot(lower_middle_income_countries, aes(x = GDP, y =CO2_by_country)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE, color = "blue") +
   labs(title = "Correlation between the CO2 emission and the wealth of lower middle income countries ",
-       x = "CO2 level of emission",
-       y = "GDP") +
+       x = "GDP",
+       y = "CO2 level of emission") +
   theme_minimal()
 ```
-
 ```{r}
 #| message: false
-ggplot(upper_middle_income_countries, aes(x = CO2_by_country, y = GDP)) +
+ggplot(upper_middle_income_countries, aes(x = GDP, y =CO2_by_country)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE, color = "blue") +
   labs(title = "Correlation between the CO2 emission and the wealth of upper middle income countries ",
-       x = "CO2 level of emission",
-       y = "GDP") +
+       x = "GDP",
+       y = "CO2 level of emission") +
   theme_minimal()
 ```
-Although the correlation between the CO2 level of emission and the gdp is a clear positive one for low-income countries and quite clear for upper middle-income countries, we see some dispersions for the high-income countries and the correlation does not stand out for lower middle-income countries. But overall, we can still observe a positive correlation between these two variables for all countries, thus we can pursue our analysis further.
+```{r}
+#| message: false
+ggplot(high_income_countries, aes(x = GDP, y =CO2_by_country)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Correlation between the CO2 emission and the wealth of high income countries ",
+       x = "GDP",
+       y = "CO2 level of emission") +
+  theme_minimal()
+```
+Although the correlation between the CO2 level of emission and the gdp is a clear positive one for low-income countries and quite clear for upper middle-income countries, we see the absence of a general trend for the high-income countries and the correlation does not stand out for lower middle-income countries. But overall, we can still observe a positive correlation between these two variables for all countries, thus we can pursue our analysis further.
 
 ### c. OLS regressions
 
@@ -966,22 +963,29 @@ print(resume_ols_all_countries$coefficients)
 
 We spot that without paying attention the development stage of the country the the gross capital and the urban population have a significant impact on the CO2 emissions. Gross capital tends to impact positively CO2 emissions meanwhile the raise of the urban population tends to lower CO2 emissions.
 
-Indeed, gross capital is linked to a raise of the industrial production witch is of course a polluting activity. On the other hand, the raise of the urban population is linked to efficient infrastructures, highest density of living (less vehiculed commutes), promotion of sustainable practices and energy efficiency.
+Indeed, gross capital is linked to a raise of the industrial production witch is of course a polluting activity. On the other hand, the raise of the urban population is linked to efficient infrastructures, highest density of living (less vehicles commutes), promotion of sustainable practices and energy efficiency.
 
 ### f. Are the developed countries cheating ?
 
 ```{r}
-high_income_countries|> ggplot( aes(x= 1990:length(gross_capital),y=gross_capital))+
-  geom_point()
+#high_income_countries|> ggplot( aes(x= 1990:length(gross_capital),y=gross_capital))+
+#  geom_point()
 ```
 
 # D - Conclusion
 
-As a conclusion, Panayotou's environmental Kuznets's curves theory intuition seems to be verified on the sample. By plotting the CO2 emissions conditioned on the GDP of the top 5 world economies, we gained insight into the different realities hiding behind this concept. The most developed countries appear to be on the second part of the reverse U-shaped curve, with a negative impact of GDP on CO2 emissions. However, the impact of GDP on CO2 emissions is positive for the emerging (BRICS) and developing economies (Sub-Saharan African countries). We then split the sample into four groups based on their level of development, represented by GDP per capita. The econometrical analysis revealed a correlation between CO2 and GDP, which we verified using regressions. For each of our four groups, the coefficient of GDP and GDP squared was significant. As expected, the coefficient of GDP was positive, indicating that GDP has a positive impact on CO2 emissions. Nevertheless, the coefficient of GDP squared was negative, suggesting that beyond a certain point, the increase in GDP starts having a negative impact on CO2 emissions. In other words, infinite growth would be incompatible with the environmental emergency.
+As a conclusion, Panayotou's environmental Kuznets's curves theory intuition seems to be verified on the sample. By plotting the CO2 emissions conditioned on the GDP of the top 5 world economies, we gained insight into the different realities hiding behind this concept. The most developed countries appear to be on the second part of the reverse U-shaped curve, with a negative impact of GDP on CO2 emissions. However, the impact of GDP on CO2 emissions is positive for the emerging (BRICS) and developing economies (Sub-Saharan African countries). We then split the sample into four groups based on their level of development, represented by GDP per capita. 
+The econometric analysis revealed a correlation between CO2 and GDP, which we verified using OLS regressions. For each of our four groups, the coefficient of GDP and GDP squared was significant. As expected, the coefficient of GDP was positive, indicating that GDP has a positive impact on CO2 emissions. Nevertheless, the coefficient of GDP squared was negative, suggesting that beyond a certain point, the increase in GDP starts having a negative impact on CO2 emissions. In other words, infinite growth would be incompatible with the environmental emergency. We found the same results when augmenting our model and sax that a higher gross capital formation goes with higher CO2 emissions and a higher urban population decrease CO2 emissions. This results are quite interesting ; higher level of capital comes with a higher level of development thus we could have expected that it reflected a lowering of the pollution but the impact of the industries on the environment induced by the capital is higher.Moreover, a higher urban population could have mean a higher pollution due to the increase of the population, but it shows here that the urban population is indeed an indicator of development.
+Then, our khi-two test showed that the gdp and the CO2 emissions are dependent of each other, so it means that those variables have effectively an effect on each other.
 
 # E - Annex
 
-## Links and sources
+## 1. Data import work
+In order to do our economic growth dataset, we merged all of our datasets from the world bank together, using the country names and the years as identifiers. Before that, because we had one dataset for each variable, we had for each one to erase the unecessary columns, rename the columns and pivot them. We had one column per year and one lines per country and wanted to have the year in only one column, meaning several lines for each country (one per year). Then, we putted "NA" instead of any potential absence of values, states that our data were numeric and ensure that the separators of decimal were commas.
+For the CO2 dataset we did pretty much the same process for our three raw datasets : selection of the necessary columns, pivot of the value to obtain a column for the years, treatment of the data.
+Thus, we could join our two created sub-datasets into our main dataset (growth_CO2) by country and year.
+
+## 2. Links and sources
 
 [Link github repository](https://github.com/JoaquimBamba/project)
 
