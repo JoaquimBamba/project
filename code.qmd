@@ -32,6 +32,8 @@ Joaquim Bamba & Amandine Godefroy
 
 # A - Presentation of the research question
 
+Our project focuses on the relationship between the economic development stage of countries and their C02 emissions. We based our intuition on the Kuznets curve.
+
 The Kuznets curve, originating from Simon Kuznets' research on economic growth during the 1950s, illustrates a U-shaped correlation between a nation's developmental stage and income inequality. In 1991, Grossman and Krueger expanded this concept to environmental considerations. However, it wasn't until Panayotou's 1993 article that the Environmental Kuznets Curve (EKC) was formally introduced.
 
 The EKC proposes that in the early phases of economic progress, there is minimal concern for environmental issues. As income levels rise sufficiently to meet essential needs, a pivotal threshold (known as the turning point) is reached, prompting heightened environmental awareness and a reversal in trends. Beyond this threshold, economic advancement aligns with enhanced environmental conditions, specifically a decline in pollution. Thus, it suggests an inverse U-shaped association between pollution and economic development.
@@ -42,8 +44,7 @@ We will try to see if a country CO2 emission are effectively explained by its ec
 
 ## 1. Treatments of the data sets
 
-We first have created two main data sets for our variables depending of there sources. Thus, we have one data sets focused on the variables from the World Bank Open Data that illustrate the economic growth and one data set with variables from the JRC Data Catalog of the European Commission that illustrate the CO2 emissions.
-
+We first have created two main data sets for our variables depending on their sources. Thus, we have one data set focused on the variables from the World Bank Open Data that illustrate the economic growth and one data set with variables from the JRC Data Catalog of the European Commission that illustrate the CO2 emissions.
 ```{r}
 #| echo: false
 #| warning: false
@@ -298,12 +299,11 @@ knitr::kable(table_economic_growth)
 
 #### Variables description
 
-CO2 by country : Emission country totals of C02 expressed expressed in Mt CO2/yr. In this report fossil CO2 emissions include sources from fossil fuel use (combustion, flaring), industrial processes (cement, steel, chemicals and urea) and product use.
+CO2 by country : Emission country totals of C02 expressed in Mt CO2/yr. In this report fossil CO2 emissions include sources from fossil fuel use (combustion, flaring), industrial processes (cement, steel, chemicals and urea) and product use.
 
-CO2 per GDP by country : Emission country totals of C02 expressed expressed in Mt CO2/kUSD/yr. In this report fossil CO2 emissions include sources from fossil fuel use (combustion, flaring), industrial processes (cement, steel, chemicals and urea) and product use.
+CO2 per GDP by country : Emission country totals of C02 expressed in Mt CO2/kUSD/yr.
 
-CO2 by sector and country : Emission country totals  of C02 expressed expressed in Mt, organized by economic sector of C02 expressed expressed in Mt CO2/yr. In this report fossil CO2 emissions include sources from fossil fuel use (combustion, flaring), industrial processes (cement, steel, chemicals and urea) and product use.
-
+CO2 by sector and country : Emission country totals of C02 expressed in Mt, organized by economic sector of C02 expressed expressed in Mt CO2/yr.
 
 ```{r}
 #### Cleaning of the data sets
@@ -486,12 +486,11 @@ ggplot(data = growth_energy_2019, aes(x = country, y = co2.emissions)) +
 
 ```
 
-We can spot that CO2 emissions are very unequally distributed. China, India and the US are by far more polluting than the rest of sample. China emmited 10,773,248,000 Mt, the US 5,144,361,000, followed by India with 2,314,738,000 Mt of CO2. 
+We can spot that CO2 emissions are very unequally distributed. China, India and the US are by far more polluting than the rest of sample. China emitted 10,773,248,000 Mt, the US 5,144,361,000, followed by India with 2,314,738,000 Mt of CO2.
 
 ### b. Top 5 world economies : relation between wealth and CO2 emissions
 
-Now lets plot the CO2 emissions per country depending on their GDP over time. We will study this relation for the top 5 world economies. We will now end for the rest of the analysis use our growth_CO2 base.
-
+Now let’s plot the CO2 emissions per country depending on their GDP over time. We will study this relation for the top 5 world economies. We will now and for the rest of the analysis use our growth_CO2 base.
 ```{r}
 growth_CO2_50_first<-growth_CO2|>group_by(country)
 
@@ -499,7 +498,8 @@ growth_CO2_50_first<-subset(growth_CO2, country == "United States")
 
 ggplot(growth_CO2_50_first, aes(x = GDP, y = CO2_by_country)) +
   geom_point(na.rm = T) +
-  labs(title = "CO2 growth relative to GDP (US 1970-2021)")
+  labs(title = "CO2 growth relative to GDP (US 1970-2021)") +
+  ylab("CO2 emissions")
 ```
 
 ```{r}
@@ -515,7 +515,8 @@ ggplot(growth_CO2_50_first, aes(x = GDP, y = CO2_by_country)) +
     axis.text.x = element_blank(),
     axis.text.y = element_blank(),
     axis.ticks = element_blank()
-  )
+  )+
+  ylab("CO2 emissions")
 ```
 
 ```{r}
@@ -524,7 +525,8 @@ growth_CO2_50_first<-subset(growth_CO2, country == "Japan")
 ggplot(growth_CO2_50_first, aes(x = GDP, y = CO2_by_country)) +
   geom_point(na.rm = T) +
   labs(title = "CO2 growth relative to GDP (Japan 1970-2021)") +
-  theme_minimal()
+  theme_minimal() +
+  ylab("CO2 emissions")
 ```
 
 ```{r}
@@ -533,7 +535,8 @@ growth_CO2_50_first<-subset(growth_CO2, country == "Germany")
 ggplot(growth_CO2_50_first, aes(x = GDP, y = CO2_by_country)) +
   geom_point(na.rm = T) +
   labs(title = "CO2 growth relative to GDP (Germany 1970-2021)") +
-  theme_minimal()
+  theme_minimal() +
+  ylab("CO2 emissions")
 ```
 
 ```{r}
@@ -542,10 +545,11 @@ growth_CO2_50_first<-subset(growth_CO2, country == "United Kingdom")
 ggplot(growth_CO2_50_first, aes(x = GDP, y = CO2_by_country)) +
   geom_point(na.rm = T) +
   labs(title = "CO2 growth relative to GDP (United Kingdom 1970-2021)") +
-  theme_minimal()
+  theme_minimal() +
+  ylab("CO2 emissions")
 ```
 
-By plotting the CO2 emissions of the top 5 world economies, we spot that the relation between the two variables is clearly positive in China. In the United Kingdom and in Germany, we observe a negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship. In the US, the reverse U relationship is perfectly observable.
+By plotting the CO2 emissions of the top 5 world economies, we spot that the relation between the two variables is clearly positive in China, suggesting the increase part of the reverse U relationship between the gdp and the CO2. In the United Kingdom and in Germany, we observe a negative relation between the CO2 emissions and the GPD over time. However, it is important to mention that the UK and Germany were already considered as developed economies before 1970. It could explain the graphs showing the decreasing part of the reverse U relationship. In the US, the reverse U relationship is perfectly observable. The effect for Japan is more contrasted as it seems to show a positive relationship but nothing too relevant.
 
 ### c. Analysis of the relation CO2 emission / GDP per country over time by local regions
 
@@ -568,7 +572,7 @@ ggplot(growth_CO2_western_european_countries, aes(x = GDP, y = CO2_by_country, c
 
 ```
 
-By plotting the Western European countries only, we can clearly spot reverse U relationship for Belgium and the Netherlands however, the data of Sweden, Luxembourg are following the former intuition we had about Germany and the United Kingdom we a purely negative relationship (second part of the reverse U).
+By plotting the Western European countries only, we can clearly spot reverse U relationship for Belgium and the Netherlands however, the data of Sweden, Luxembourg are following the former intuition we had about Germany and the United Kingdom we a purely negative relationship (second part of the reverse U). We saw here that Germany and the United Kingdom stand out in the graph because we chose to work on data by country (and not per capita by country). 
 
 To confirm the intuition, let's plot the Eastern Europe countries data considering that they developed later than Eastern ones.
 
@@ -604,7 +608,7 @@ grid.arrange(plot1, plot2, nrow = 2)
 
 ```
 
-Indeed, the expected reverse U relationship is clearer for Eastern European countries than for the Western ones even if we are still able to spot a negative relationship between the variables for the weathier of them such as Poland (21st world economy).
+Indeed, the expected reverse U relationship is clearer for Eastern European countries than for the Western ones even if we are still able to spot a negative relationship between the variables for the wealthier of them such as Poland (21st world economy).
 
 #### Subsaharan African Countries
 
@@ -665,10 +669,8 @@ plot2
 plot3
 plot4
 ```
-
-When we pay attention to the Sub-Saharan African countries that are still developing the relation relation between CO2 emissions and GDP seems to be positive considering that these country are still on the first part of reverse U relationship between these two variables.
-
-South Africa appears as an out-liner since it an emerging economy in opposition with developing ones. 
+When we pay attention to the Sub-Saharan African countries that are still developing the relation between CO2 emissions and GDP seems to be positive it follows the theory of EKC for developing countries that stead that these countries are still on the first part of reverse U relationship.
+Once again, two countries stand out: South-Africa and Nigeria, it can be explained by the fact that South-Africa is the most developing country of the region and Nigeria the most populated one and so due to our method of plotting they appears as out-liners.
 
 #### Emerging economies
 
@@ -692,7 +694,7 @@ ggplot(growth_CO2_emerging_countries, aes(x = GDP, y = CO2_by_country, color = c
         axis.ticks = element_blank())
 ```
 
-When plotting the data concerning the BRICS, we see that the relationship is effectively positive over time.
+When plotting the data concerning the BRICS, we see that the relationship is effectively positive over time. It follows what the EKC theory mentioned.
 
 ## 2. Econometric analysis
 
@@ -814,6 +816,7 @@ ggplot(upper_middle_income_countries, aes(x = CO2_by_country, y = GDP)) +
        y = "GDP") +
   theme_minimal()
 ```
+Although the correlation between the CO2 level of emission and the gdp is a clear positive one for low-income countries and quite clear for upper middle-income countries, we see some dispersions for the high-income countries and the correlation does not stand out for lower middle-income countries. But overall, we can still observe a positive correlation between these two variables for all countries, thus we can pursue our analysis further.
 
 ### c. OLS regressions
 
@@ -861,8 +864,7 @@ For each model, both variables are significant (their p-value is \<1%). The coef
 
 ### d. Khi-2 test
 
-$$ H_0 : \text{CO2 and GDP are independent} $$ 
-$$ H_1 : \text{CO2 and GDP are dependent} $$
+$$ H_0 : \text{CO2 and GDP are independent} $$ $$ H_1 : \text{CO2 and GDP are dependent} $$
 
 #### Low income countries
 
@@ -968,16 +970,14 @@ Indeed, gross capital is linked to a raise of the industrial production witch is
 
 ### f. Are the developed countries cheating ?
 
-
-
 ```{r}
 high_income_countries|> ggplot( aes(x= 1990:length(gross_capital),y=gross_capital))+
   geom_point()
 ```
 
-# D - Conclusion 
+# D - Conclusion
 
-As a conclusion, Panayotou's environmental Kuznets's curves theory intuition seems to be verified on the sample. By plotting the CO2 emissions conditioned on the GDP of the top 5 world economies, we gained insight into the different realities hiding behind this concept. The most developed countries appear to be on the second part of the reverse U-shaped curve, with a negative impact of GDP on CO2 emissions. However, the impact of GDP on CO2 emissions is positive for the emerging (BRICS) and developing economies (Sub-Saharan African countries). We then split the sample into four groups based on their level of development, represented by GDP per capita. The econometrical analysis revealed a correlation between CO2 and GDP, which we verified using regressions. For each of our four groups, the coefficient of GDP and GDP squared was significant. As expected, the coefficient of GDP was positive, indicating that GDP has a positive impact on CO2 emissions. Nevertheless, the coefficient of GDP squared was negative, suggesting that beyond a certain point, the increase in GDP starts having a negative impact on CO2 emissions. In other words, infinite growth would be incompatible with the environmental emergency. 
+As a conclusion, Panayotou's environmental Kuznets's curves theory intuition seems to be verified on the sample. By plotting the CO2 emissions conditioned on the GDP of the top 5 world economies, we gained insight into the different realities hiding behind this concept. The most developed countries appear to be on the second part of the reverse U-shaped curve, with a negative impact of GDP on CO2 emissions. However, the impact of GDP on CO2 emissions is positive for the emerging (BRICS) and developing economies (Sub-Saharan African countries). We then split the sample into four groups based on their level of development, represented by GDP per capita. The econometrical analysis revealed a correlation between CO2 and GDP, which we verified using regressions. For each of our four groups, the coefficient of GDP and GDP squared was significant. As expected, the coefficient of GDP was positive, indicating that GDP has a positive impact on CO2 emissions. Nevertheless, the coefficient of GDP squared was negative, suggesting that beyond a certain point, the increase in GDP starts having a negative impact on CO2 emissions. In other words, infinite growth would be incompatible with the environmental emergency.
 
 # E - Annex
 
@@ -985,7 +985,7 @@ As a conclusion, Panayotou's environmental Kuznets's curves theory intuition see
 
 [Link github repository](https://github.com/JoaquimBamba/project)
 
-### a. *Sources* *:*
+### a. *Sources :*
 
 -   **World Bank Open Data :** The World Bank Open Data is an initiative by the World Bank Group that provides free and open access to a wide range of global development data. It offers a vast collection of data on various aspects of development across countries, including social, economic, financial, and environmental indicators. This data is made available to the public, researchers, policymakers, and developers to promote transparency, informed decision-making, and development efforts worldwide. The World Bank Open Data platform allows users to access, download, and visualize data in various formats, including charts, graphs, and maps. It serves as a valuable resource for researchers, policymakers, journalists, and anyone interested in understanding global development trends and making data-driven decisions to support development initiatives worldwide.
 
